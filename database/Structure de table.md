@@ -1,17 +1,19 @@
+# Fichier guide de la structure de table
 
-**NB : les noms de table a faire en ASCII , pas de nom de table avec des caractères en UTF-8**
-## Clients 
+**NB : les noms de table et de champ a faire en ASCII , pas de nom de table avec des caractères en UTF-8**
 
-+ id 
+## Clients
+
++ id
 + nom
 + email
 + date_naissance
 + taille
 + poids
 
-## Objectif 
+## Objectif
 
- perte de poids , gain , IMC idéal 
+ perte de poids , gain , IMC idéal
 
 + id
 + libelle
@@ -21,16 +23,18 @@
 + client
 + objectif
 + date_choix
+
 ## Régime
 
-**Description :** composition alimentaire 
+**Description :** composition alimentaire
 
 + id
 + pourcentage_viande
-+ pourcentage_légume
++ pourcentage_volaille
 + pourcentage_poisson
-+ prix_par_jour 
++ prix_par_jour
 + impact_journalier
+
 ## Sport
 
 + libelle
@@ -40,12 +44,12 @@
 + régime
 + sport
 + client_objectif
-+ durée 
++ durée
 
-## Option 
+## Option
 
- Gold et tout 
- 
+ Gold et tout
+
 + libelle
 + remise
 
@@ -55,7 +59,7 @@ Sert d'historique pour les options des clients
 
 + client
 + option
-+ date 
++ date
 
 ## Porte-monnaie ( mvt_compte )
 
@@ -81,4 +85,3 @@ Table pour les admin
 
 + username
 + password
-
