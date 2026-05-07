@@ -2,3 +2,4 @@
 composer.lock
 vendor/
 things_todo.md
+*.log
