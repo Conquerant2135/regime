@@ -84,7 +84,7 @@ class AuthController extends BaseController
         // c'est ici qu'on va faire la validation depuis le premieer formulaire
 
         if ( ! $this->validate($this->wizardFistPageValidationRules())) {
-            return view('auth/info_perso', ['validation' => $this->validator]);
+            return view('auth/contact', ['validation' => $this->validator]);
         }
 
         $nom = $this->request->getPost('nom');
