@@ -2,7 +2,7 @@
 
 **NB : les noms de table et de champ a faire en ASCII , pas de nom de table avec des caractères en UTF-8**
 
-## Clients
+## User
 
 + id
 + nom
@@ -10,6 +10,12 @@
 + date_naissance
 + taille
 + poids
++ role
+
+## Role
+
++ id
++ libelle
 
 ## Objectif
 

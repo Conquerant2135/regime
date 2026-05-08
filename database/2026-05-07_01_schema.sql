@@ -3,22 +3,27 @@ CREATE DATABASE IF NOT EXISTS regime
 	COLLATE utf8mb4_unicode_ci;
 
 USE regime;
-CREATE TABLE clients (
+
+CREATE TABLE users (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	nom VARCHAR(120) NOT NULL,
 	email VARCHAR(190) NOT NULL,
 	date_naissance DATE NOT NULL,
 	taille DECIMAL(5,2) NOT NULL,
 	poids DECIMAL(6,2) NOT NULL,
+	mot_de_passe VARCHAR(255) NOT NULL,
+	role ENUM('user', 'admin') DEFAULT 'user', 
 	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	KEY uq_users_email (email),
 	CONSTRAINT chk_clients_taille CHECK (taille > 0),
 	CONSTRAINT chk_clients_poids CHECK (poids > 0)
 );
 
 CREATE TABLE objectifs (
 	id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(60) NOT NULL UNIQUE
+	libelle VARCHAR(60) NOT NULL,
+	KEY uq_objectifs_libelle (libelle)
 );
 
 CREATE TABLE client_objectifs (
@@ -28,7 +33,7 @@ CREATE TABLE client_objectifs (
 	PRIMARY KEY (client_id, objectif_id, date_choix),
 	KEY idx_client_objectifs_objectif (objectif_id),
 	CONSTRAINT fk_client_objectifs_client
-		FOREIGN KEY (client_id) REFERENCES clients (id)
+		FOREIGN KEY (client_id) REFERENCES users (id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	CONSTRAINT fk_client_objectifs_objectif
@@ -47,12 +52,14 @@ CREATE TABLE regimes (
 	CONSTRAINT chk_regimes_viande CHECK (pourcentage_viande >= 0),
 	CONSTRAINT chk_regimes_legume CHECK (pourcentage_volaille >= 0),
 	CONSTRAINT chk_regimes_poisson CHECK (pourcentage_poisson >= 0),
+	CONSTRAINT chk_total_prct CHECK ( pourcentage_poisson + pourcentage_volaille + pourcentage_viande <= 100),
 	CONSTRAINT chk_regimes_prix CHECK (prix_par_jour >= 0)
 );
 
 CREATE TABLE sports (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(120) NOT NULL UNIQUE
+	libelle VARCHAR(120) NOT NULL,
+	KEY uq_sports_libelle (libelle)
 );
 
 CREATE TABLE regime_sports (
@@ -82,8 +89,9 @@ CREATE TABLE regime_sports (
 
 CREATE TABLE options (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(120) NOT NULL UNIQUE,
+	libelle VARCHAR(120) NOT NULL,
 	remise DECIMAL(5,2) NOT NULL DEFAULT 0,
+	KEY uq_options_libelle (libelle),
 	CONSTRAINT chk_options_remise CHECK (remise BETWEEN 0 AND 100)
 );
 
@@ -94,7 +102,7 @@ CREATE TABLE client_options (
 	PRIMARY KEY (client_id, option_id, date_option),
 	KEY idx_client_options_option (option_id),
 	CONSTRAINT fk_client_options_client
-		FOREIGN KEY (client_id) REFERENCES clients (id)
+		FOREIGN KEY (client_id) REFERENCES users (id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	CONSTRAINT fk_client_options_option
@@ -105,7 +113,8 @@ CREATE TABLE client_options (
 
 CREATE TABLE raisons (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(120) NOT NULL
+	libelle VARCHAR(120) NOT NULL,
+	KEY uq_raisons_libelle (libelle)
 );
 
 CREATE TABLE mvt_compte (
@@ -118,7 +127,7 @@ CREATE TABLE mvt_compte (
 	KEY idx_mvt_compte_client (client_id),
 	KEY idx_mvt_compte_raison (raison_id),
 	CONSTRAINT fk_mvt_compte_client
-		FOREIGN KEY (client_id) REFERENCES clients (id)
+		FOREIGN KEY (client_id) REFERENCES users (id)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	CONSTRAINT fk_mvt_compte_raison
@@ -130,17 +139,10 @@ CREATE TABLE mvt_compte (
 
 CREATE TABLE codes (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	valeur VARCHAR(100) NOT NULL UNIQUE,
+	valeur VARCHAR(100) NOT NULL,
 	gain DECIMAL(12,2) NOT NULL,
 	is_used TINYINT(1) NOT NULL DEFAULT 0,
 	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	UNIQUE KEY uq_codes_valeur (valeur),
 	CONSTRAINT chk_codes_gain CHECK (gain > 0)
-);
-
-CREATE TABLE users (
-	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	username VARCHAR(100) NOT NULL,
-	password VARCHAR(255) NOT NULL,
-	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	UNIQUE KEY uq_users_username (username)
 );
