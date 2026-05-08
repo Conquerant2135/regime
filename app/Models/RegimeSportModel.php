@@ -60,10 +60,10 @@ class RegimeSportModel extends Model
     public function suggestByObjectif($objectifLibelle)
     {
         switch ($objectifLibelle) {
-            case 'Augmenter son poids':
-                return $this->where('impact_journalier >', 0)->findAll();
-            case 'Réduire son poids':
+            case 'perte de poids':
                 return $this->where('impact_journalier <', 0)->findAll();
+            case 'gain':
+                return $this->where('impact_journalier >', 0)->findAll();
             case 'Atteindre son IMC idéal':
                 return $this->orderBy('ABS(impact_journalier)', 'ASC')->findAll();
             default:
