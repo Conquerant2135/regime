@@ -36,10 +36,11 @@
             </a>
 
             <div class="sidebar-bottom">
-                <a href="<?= site_url('auth/logout') ?>" class="user-row" style="color:#fff;text-decoration:none">
-                    <div class="avatar"><?= substr(session()->get('userEmail'), 0, 2) ?></div>
+                <?php $userLabel = session()->get('userEmail') ?? session()->get('userNom') ?? 'Utilisateur'; ?>
+                <a href="<?= site_url('logout') ?>" class="user-row" style="color:#fff;text-decoration:none">
+                    <div class="avatar"><?= esc(substr($userLabel, 0, 2)) ?></div>
                     <div class="user-info">
-                        <div class="name"><?= esc(session()->get('userEmail')) ?></div>
+                        <div class="name"><?= esc($userLabel) ?></div>
                         <div class="role">Administrateur</div>
                     </div>
                 </a>
@@ -51,7 +52,7 @@
             <div class="topbar">
                 <div class="topbar-title"><?= esc($title ?? 'Tableau de bord') ?></div>
                 <div class="topbar-actions">
-                    <a href="<?= site_url('auth/logout') ?>" class="icon-btn" title="Déconnexion">
+                    <a href="<?= site_url('logout') ?>" class="icon-btn" title="Déconnexion">
                         <svg viewBox="0 0 24 24">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                             <polyline points="16 17 21 12 16 7" />

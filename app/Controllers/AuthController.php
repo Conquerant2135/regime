@@ -36,13 +36,15 @@ class AuthController extends BaseController
         if ($user['mot_de_passe'] === $password) {
             session()->set([
                 'user_id' => $user['id'],
+                'userEmail' => $user['email'],
+                'userNom' => $user['nom'],
                 'role' => $user['role'],
                 'logged_in' => true
             ]);
             if ($user['role'] === 'admin') {
-                return view('admin/dashboard');
+                return redirect()->to('/admin/dashboard');
             }
-            return view('test_login');
+            return redirect()->to('/regime-sport');
         }
     }
 
@@ -66,8 +68,8 @@ class AuthController extends BaseController
         $password = $this->request->getPost('password');
         $naissance = $this->request->getPost('naissance');
 
-        $data = [ 'nom' => $nom , 'email'=> $email,'mot_de_passe'=> $password , 'date_naissance' => $naissance ];
-        session()->set('inscription' , $data);
+        $data = ['nom' => $nom, 'email' => $email, 'mot_de_passe' => $password, 'date_naissance' => $naissance];
+        session()->set('inscription', $data);
         return view('auth/info_perso');
     }
 
