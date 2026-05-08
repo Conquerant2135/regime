@@ -39,6 +39,9 @@ class AuthController extends BaseController
                 'role' => $user['role'],
                 'logged_in' => true
             ]);
+            if ($user['role'] === 'admin') {
+                return view('admin/dashboard');
+            }
             return view('test_login');
         }
     }
@@ -65,5 +68,16 @@ class AuthController extends BaseController
         // on fait la validation du 2eme formulaire , si tout est ok on va
         // inscrire la personne
         return null;
+    }
+
+    public static function testFilters()
+    {
+        return view('test_filter');
+    }
+
+    public function logout()
+    {
+        session()->destroy();
+        return redirect()->to('/login');
     }
 }
