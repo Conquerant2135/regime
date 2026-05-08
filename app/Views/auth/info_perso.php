@@ -17,31 +17,24 @@
         <section class="login">
             <div class="container">
                 <div class="form-container">
-                    <form action="/inscription/info" method="post" class="login-form">
+                    <form action="/inscription"  method="post" class="login-form">
                         <div class="form-group">
                             <h2>S'inscrire</h2>
                         </div>
                         <div class="form-group">
                             <div class="form-label">
-                                <label for="nom">Nom :</label>
+                                <label for="Taille">Taille (en cm) :</label>
                             </div>
-                            <input type="text" name="nom" id="nom" placeholder="Nom">
+                            <input type="number" step="any" name="taille" id="taille" placeholder="taille en cm">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
-                                <label for="email">Email :</label>
+                                <label for="poid">Poid (en kg) :</label>
                             </div>
-                            <input type="email" name="email" id="email" placeholder="example@example.com">
+                            <input type="number" step="0.01" name="poid" id="poid" placeholder="poid en kg">
                         </div>
                         <div class="form-group">
-                            <div class="form-label">
-                                <label for="password">Mot de passe :</label>
-                            </div>
-                            <input type="password" name="password" id="password" placeholder="Mot de passe">
-                        </div>
-
-                        <div class="form-group">
-                            <input type="submit" value="Page suivante" class="btn btn-accept">
+                            <input type="submit" value="S'inscrire" class="btn btn-accept">
                         </div>
                     </form>
                 </div>

@@ -5,6 +5,8 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
 $routes->get('/', 'AuthController::loginForm');
-$routes->get('/inscription/page1' , 'AuthController::inscriptionForm');
-$routes->get('/inscription/page2' , 'AuthController::inscriptionForm');
+$routes->get('/inscription/contact' , 'AuthController::inscriptionFormContact');
+$routes->post('/inscription/info' , 'AuthController::inscriptionFormInfoPerso');
+$routes->post('/inscription' , 'AuthController::inscription');

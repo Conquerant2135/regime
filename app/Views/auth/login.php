@@ -34,7 +34,7 @@
                             <input type="password" name="password" id="password" placeholder="Mot de passe">
                         </div>
                         <div class="form-group">
-                            <p>Pas encore de compte ? <a href="/inscription">S'inscrire</a></p>
+                            <p>Pas encore de compte ? <a href="/inscription/contact">S'inscrire</a></p>
                         </div>
 
                         <div class="form-group">
