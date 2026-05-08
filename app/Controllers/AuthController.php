@@ -34,12 +34,16 @@ class AuthController extends BaseController
         }
 
         if ($user['mot_de_passe'] === $password) {
+            // Récupérer le solde du client
+            $solde = $usersModel->getSolde($user['id']);
+            
             session()->set([
                 'user_id' => $user['id'],
                 'userEmail' => $user['email'],
                 'userNom' => $user['nom'],
                 'role' => $user['role'],
-                'logged_in' => true
+                'logged_in' => true,
+                'solde' => $solde
             ]);
             if ($user['role'] === 'admin') {
                 return redirect()->to('/admin/dashboard');

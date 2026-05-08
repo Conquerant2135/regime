@@ -61,7 +61,11 @@ public function acheterRegimeSport()
             return redirect()->back()->with('error', 'Erreur lors de la transaction');
         }
 
-        return redirect()->to('/home')->with('success', 'Achat effectué avec succès! Solde actuel : ' . number_format($soldeClient - $prixTotal, 2) . '€');
+        // Mettre à jour le solde en session
+        $nouveauSolde = $soldeClient - $prixTotal;
+        session()->set('solde', $nouveauSolde);
+
+        return redirect()->to('/portefeuille')->with('success', 'Achat effectué avec succès! Solde actuel : ' . number_format($nouveauSolde, 2) . '€');
     } catch (\Exception $e) {
         $db->transRollback();
         return redirect()->back()->with('error', 'Erreur: ' . $e->getMessage());

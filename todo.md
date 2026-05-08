@@ -120,3 +120,16 @@ public function buy()
 | `duree` | Requête | int |
 | `prixRegime` | DB (regimes) | float |
 | `soldeClient` | DB (mvt_compte SUM) | float | 
+
+# Fonctionnalite : On peut rajouter de l’argent dans son porte monnaie en rentrant un 
+code
+
+- Etape creer un bouton comme dans un jeu en haut a droite : le solde 
+- En cliquant dessus on arrive dans une page ou on peut voir tout les historique de mouvement de compte 
+- afficher un boutton + qui  fait apparitre grace a ajax un input de code avec label " Nous vous avons envoyer un CODE Veuillez le saisir  ici : "
+- on verifie si le CODE  existe
+- si le code existe on verifie s'il n'as pas ete deja utiliser
+- si tout se passe bien on commence la transaction
+  - inserer une ligne dans mvt_compte 
+- il faut maintenant creer un repertoire dans vue : 
+  - portefeuille ( c'est la qu.on fait les vues)
