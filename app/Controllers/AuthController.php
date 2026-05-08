@@ -8,7 +8,7 @@ use App\Models\UsersModel;
 
 class AuthController extends BaseController
 {
-    public static function loginForm()
+    public function loginForm()
     {
         return view('auth/login');
     }
@@ -46,13 +46,13 @@ class AuthController extends BaseController
         }
     }
 
-    public static function inscriptionFormContact()
+    public function inscriptionFormContact()
     {
         // affiche juste le premier formlaire
         return view('auth/contact');
     }
 
-    public static function inscriptionFormInfoPerso()
+    public function inscriptionFormInfoPerso()
     {
         // recolter les information et les mettres dans une session
         // on va faier un wizard pour la simplicite d'usage
@@ -60,17 +60,32 @@ class AuthController extends BaseController
         // question : faire une validation a chaque page ou dire que quelque chose est faux a la fin
         // je pense faire une validation a chaque changement de page est mieux
         // c'est ici qu'on va faire la validation depuis le premieer formulaire
+
+        $nom = $this->request->getPost('nom');
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+        $naissance = $this->request->getPost('naissance');
+
+        $data = [ 'nom' => $nom , 'email'=> $email,'mot_de_passe'=> $password , 'date_naissance' => $naissance ];
+        session()->set('inscription' , $data);
         return view('auth/info_perso');
     }
 
-    public static function inscription()
+    public function inscription()
     {
+        $userData = session()->get('inscription');
+        session()->remove('inscription');
+        $userData['taille'] = $this->request->getPost('taille');
+        $userData['poids'] = $this->request->getPost('poid');
+        $userData[''] = $this->request->getPost('');
         // on fait la validation du 2eme formulaire , si tout est ok on va
         // inscrire la personne
-        return null;
+        $usersModel = new UsersModel();
+        $usersModel->save($userData);
+        return view('auth/login');
     }
 
-    public static function testFilters()
+    public function testFilters()
     {
         return view('test_filter');
     }

@@ -39,6 +39,12 @@
                             </div>
                             <input type="password" name="password" id="password" placeholder="Mot de passe">
                         </div>
+                        <div class="form-group">
+                            <div class="form-label">
+                                <label for="naissance">Date de naissance :</label>
+                            </div>
+                            <input type="date" name="naissance" id="naissance">
+                        </div>
 
                         <div class="form-group">
                             <input type="submit" value="Page suivante" class="btn btn-accept">
