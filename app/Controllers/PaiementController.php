@@ -74,7 +74,6 @@ public function acheterRegimeSport()
             return redirect()->back()->with('error', 'Erreur lors de la transaction');
         }
 
-        // Mettre à jour le solde en session
         $nouveauSolde = $soldeClient - $prixTotal;
         session()->set('solde', $nouveauSolde);
 
