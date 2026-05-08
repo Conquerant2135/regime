@@ -24,8 +24,6 @@ class AuthController extends BaseController
         $password = $this->request->getPost('mot_de_passe');
         $usersModel = new UsersModel();
 
-        $data = ['email' => $email, 'mot_de_passe' => $password];
-
         if (!$this->validate($this->modelValidationRules())) {
             return view('auth/login', [
                 'validation' => $this->validator
@@ -35,7 +33,7 @@ class AuthController extends BaseController
         $user = $usersModel->getByEmail($email);
 
         if (!$user) {
-            return view('auth/login');
+            return view('auth/login' , ['notFound' => 'Utilisateur/adresse mail introuvable'] );
         }
 
         if ($user['mot_de_passe'] === $password) {
@@ -48,6 +46,8 @@ class AuthController extends BaseController
                 return view('admin/dashboard');
             }
             return view('test_login');
+        } else {
+            return view('auth/login', [ 'wrong' => 'Mot de passe incorrect']);
         }
     }
 
