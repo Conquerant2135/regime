@@ -6,6 +6,7 @@
     <title>Test de connexion</title>
 </head>
 <body>
+    <?php include 'partials/navbar.php'; ?>
     <h1>Login successful</h1>
 </body>
 </html>

@@ -22,18 +22,17 @@ class RegimeSportController extends BaseController
     }
 
     /**
-     * Affiche la liste des couples régimes et sports avec un filtre par utilisateur
+     * Affiche la liste des couples régimes et sports pour l'utilisateur connecté
      */
     public function getRegimeSport()
     {
-        $users = $this->usersModel->findAll();
-        $selectedUserId = $this->request->getGet('user_id');
+        $selectedUserId = session()->get('user_id');
         $regimesSports = $this->regimeSportModel->getAllCombinaisons();
         $userObjectif = null;
         $selectedUser = null;
 
         if ($selectedUserId) {
-            $selectedUser = $this->usersModel->find($selectedUserId);
+            $selectedUser = $this->usersModel->find((int) $selectedUserId);
 
             if ($selectedUser) {
                 // Récupère le dernier objectif enregistré pour l'utilisateur sélectionné
@@ -92,12 +91,14 @@ class RegimeSportController extends BaseController
                 }
             }
         }
+        else {
+            $regimesSports = [];
+        }
 
         $data = [
             'title' => 'Couples régimes - sports',
             'regimesSports' => $regimesSports,
             'userObjectif' => $userObjectif,
-            'users' => $users,
             'selectedUserId' => $selectedUserId,
             'selectedUser' => $selectedUser
         ];

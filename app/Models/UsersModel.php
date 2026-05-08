@@ -80,6 +80,6 @@ class UsersModel extends Model
             [$userId]
         )->getRow();
 
-        return $result->solde ?? 0;
+        return (float)($result->solde ?? 0);
     }
 }
