@@ -19,6 +19,16 @@ $routes->post('/inscription' , 'AuthController::inscription');
 
 $routes->get('/test-payement', 'PaiementController::testPayement');
 $routes->post('/acheter_regime_sport', 'PaiementController::acheterRegimeSport');
+
+// Routes Portefeuille
+$routes->get('/portefeuille', 'PortefeuilleController::index');
+$routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCode');
+
+// Routes Debug (à supprimer après testing)
+$routes->get('/debug_wallet', 'DebugController::wallet');
+$routes->post('/debug_wallet_ajax', 'DebugController::walletAjax');
+$routes->get('/test_ajax', function() { return view('test_ajax'); });
+
 // grouper dans une route de ce style les chemins destinees aux personnes qui
 // sont connectés et les users simple (peut etre les admins ne doivent pas passer ici aussi)
 $routes->group('',['filter' => 'auth'] , function ($routes) {
