@@ -18,6 +18,19 @@ public function acheterRegimeSport()
     $duree = $this->request->getPost('duree');
     $prixTotal = $this->request->getPost('prix');
 
+    if($objectifId == "gain"){
+        $objectifId = 1;
+    } elseif($objectifId == "imc ideal"){
+        $objectifId = 2;
+    }
+    elseif($objectifId == "perte de poids"){
+        $objectifId = 3;
+    }
+    elseif($objectifId == ""){
+        return redirect()->back()->with('error', 'Objectif invalide avec '. $objectifId);
+    }
+
+
     if (!$regimeId || !$sportId || !$objectifId || !$duree || !$prixTotal) {
         return redirect()->back()->with('error', 'Données manquantes');
     }
