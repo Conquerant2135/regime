@@ -8,6 +8,11 @@ use App\Models\UsersModel;
 
 class AuthController extends BaseController
 {
+    private function modelValidationRules()
+    {
+        return ['email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]'];
+    }
+
     public function loginForm()
     {
         return view('auth/login');
@@ -16,14 +21,14 @@ class AuthController extends BaseController
     public function login()
     {
         $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+        $password = $this->request->getPost('mot_de_passe');
         $usersModel = new UsersModel();
 
-        $data = ['email' => $email, 'password' => $password];
+        $data = ['email' => $email, 'mot_de_passe' => $password];
 
-        if (!$usersModel->validate($data)) {
+        if (!$this->validate($this->modelValidationRules())) {
             return view('auth/login', [
-                'validation' => $usersModel->errors()
+                'validation' => $this->validator
             ]);
         }
 
@@ -66,8 +71,8 @@ class AuthController extends BaseController
         $password = $this->request->getPost('password');
         $naissance = $this->request->getPost('naissance');
 
-        $data = [ 'nom' => $nom , 'email'=> $email,'mot_de_passe'=> $password , 'date_naissance' => $naissance ];
-        session()->set('inscription' , $data);
+        $data = ['nom' => $nom, 'email' => $email, 'mot_de_passe' => $password, 'date_naissance' => $naissance];
+        session()->set('inscription', $data);
         return view('auth/info_perso');
     }
 
