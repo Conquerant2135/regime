@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Override;
 
 class UsersModel extends Model
 {
@@ -28,8 +29,14 @@ class UsersModel extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = ['email' => 'required|valid_email', 'mot_de_passe' => 'min_length[6]'];
-    protected $validationMessages   = [];
+    protected $validationRules      = ['email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]'];
+    protected $validationMessages   = ['email' =>
+                                            ['required' => 'Un email est obligaroire',
+                                            'valid_email' => 'Le format du mail est incorrect',],
+                                        'mot_de_passe' =>
+                                            ['required' => 'Un mot de passe est obligatoire',
+                                            'min_length[6]' => 'Mot de passe trop court',]
+                                        ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -44,8 +51,15 @@ class UsersModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getByEmail(string $email){
-        return $this->where('email' , $email)->first();
+    #[Override]
+    public function getValidationRules(array $options = []): array
+    {
+        return $this->validationRules;
+    }
+
+    public function getByEmail(string $email)
+    {
+        return $this->where('email', $email)->first();
     }
 
     /**
@@ -58,10 +72,10 @@ class UsersModel extends Model
     public function getSolde($userId): float
     {
         $db = \Config\Database::connect();
-        
+
         $result = $db->query(
-            "SELECT SUM(CASE WHEN type_transaction = 'credit' THEN montant ELSE -montant END) as solde 
-             FROM mvt_compte 
+            "SELECT SUM(CASE WHEN type_transaction = 'credit' THEN montant ELSE -montant END) as solde
+             FROM mvt_compte
              WHERE client_id = ?",
             [$userId]
         )->getRow();
