@@ -17,7 +17,7 @@
         <section class="login">
             <div class="container">
                 <div class="form-container">
-                    <form action="/connection" class="login-form">
+                    <form action="/login" class="login-form" method="post">
                         <div class="form-group">
                             <h2> Se connecter</h2>
                         </div>
@@ -25,13 +25,13 @@
                             <div class="form-label">
                                 <label for="email">Email :</label>
                             </div>
-                            <input type="email" name="email" id="email" placeholder="example@example.com">
+                            <input type="email" name="email" id="email" placeholder="example@example.com" value="batman69@gmail.com">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="password">Mot de passe :</label>
                             </div>
-                            <input type="password" name="password" id="password" placeholder="Mot de passe">
+                            <input type="password" name="password" id="password" placeholder="Mot de passe" value="batman69">
                         </div>
                         <div class="form-group">
                             <p>Pas encore de compte ? <a href="/inscription/contact">S'inscrire</a></p>
