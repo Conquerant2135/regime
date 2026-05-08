@@ -40,6 +40,7 @@
                     <th>Impact journalier (kg)</th>
                     <?php if ($selectedUser): ?>
                         <th>Durée (jours)</th>
+                        <th>Cout total</th>
                     <?php endif; ?>
                 </tr>
             </thead>
@@ -50,11 +51,13 @@
                         $sport = $rs['sport_libelle'] ?? $rs['sport'] ?? $rs['sport_label'] ?? '';
                         $impact = $rs['impact_journalier'] ?? null;
                         $duree = $rs['duree_jours'] ?? null;
+                        $cout_total = $rs['cout_total'] ?? null;
                     } else {
                         $regime = $rs->regime_nom ?? $rs->regime ?? $rs->regime_label ?? '';
                         $sport = $rs->sport_libelle ?? $rs->sport ?? $rs->sport_label ?? '';
                         $impact = $rs->impact_journalier ?? null;
                         $duree = property_exists($rs, 'duree_jours') ? $rs->duree_jours : null;
+                        $cout_total = property_exists($rs, 'cout_total') ? $rs->cout_total : null;
                     }
                     ?>
                     <tr>
@@ -64,6 +67,13 @@
                         <td><?= esc($impact ?: '—') ?></td>
                         <?php if ($selectedUser): ?>
                             <td><?= $duree === null ? '—' : esc($duree) ?></td>
+                            <td>
+                                <?php if ($cout_total === null): ?>
+                                    —
+                                <?php else: ?>
+                                    <?= esc(number_format((float) $cout_total, 2, '.', '')) ?>
+                                <?php endif; ?>
+                            </td>
                         <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>

@@ -57,15 +57,32 @@ class RegimeSportController extends BaseController
                         // normalize to array for easier manipulation
                         $row = is_array($rs) ? $rs : (array) $rs;
 
+                        // impact journalier
                         $impact = null;
                         if (isset($row['impact_journalier'])) {
                             $impact = (float) $row['impact_journalier'];
                         }
 
+                        // déterminer le prix journalier à utiliser : uniquement depuis le régime
+                        $rowPrixJournalier = 0.0;
+                        if (isset($row['prix_par_jour']) && $row['prix_par_jour'] !== '') {
+                            $rowPrixJournalier = (float) $row['prix_par_jour'];
+                        } elseif (isset($row['prix_journalier']) && $row['prix_journalier'] !== '') {
+                            $rowPrixJournalier = (float) $row['prix_journalier'];
+                        }
+
                         if ($impact === 0.0 || $impact === null) {
                             $row['duree_jours'] = null;
+                            $row['cout_total'] = null;
                         } else {
-                            $row['duree_jours'] = (int) ceil(abs($actionPoids) / abs($impact));
+                            $duree = (int) ceil(abs($actionPoids) / max(abs($impact), 0.00001));
+                            $row['duree_jours'] = $duree;
+
+                            if ($rowPrixJournalier > 0) {
+                                $row['cout_total'] = round($rowPrixJournalier * $duree, 2);
+                            } else {
+                                $row['cout_total'] = null;
+                            }
                         }
 
                         $enhanced[] = $row;
