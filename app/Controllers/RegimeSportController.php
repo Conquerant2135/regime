@@ -48,6 +48,31 @@ class RegimeSportController extends BaseController
                         $regimesSports = $this->regimeSportModel->suggestByObjectif($userObjectif);
                     }
                 }
+                // Si on a un objectif et un action_poids, calculer la durée (jours) par combinaison
+                if (!empty($userObjectifRow) && isset($userObjectifRow['action_poids'])) {
+                    $actionPoids = (float) $userObjectifRow['action_poids'];
+                    $enhanced = [];
+
+                    foreach ($regimesSports as $rs) {
+                        // normalize to array for easier manipulation
+                        $row = is_array($rs) ? $rs : (array) $rs;
+
+                        $impact = null;
+                        if (isset($row['impact_journalier'])) {
+                            $impact = (float) $row['impact_journalier'];
+                        }
+
+                        if ($impact === 0.0 || $impact === null) {
+                            $row['duree_jours'] = null;
+                        } else {
+                            $row['duree_jours'] = (int) ceil(abs($actionPoids) / abs($impact));
+                        }
+
+                        $enhanced[] = $row;
+                    }
+
+                    $regimesSports = $enhanced;
+                }
             }
         }
 

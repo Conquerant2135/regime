@@ -38,6 +38,9 @@
                     <th>Régime</th>
                     <th>Sport</th>
                     <th>Impact journalier (kg)</th>
+                    <?php if ($selectedUser): ?>
+                        <th>Durée (jours)</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -46,10 +49,12 @@
                         $regime = $rs['regime_nom'] ?? $rs['regime'] ?? $rs['regime_label'] ?? '';
                         $sport = $rs['sport_libelle'] ?? $rs['sport'] ?? $rs['sport_label'] ?? '';
                         $impact = $rs['impact_journalier'] ?? null;
+                        $duree = $rs['duree_jours'] ?? null;
                     } else {
                         $regime = $rs->regime_nom ?? $rs->regime ?? $rs->regime_label ?? '';
                         $sport = $rs->sport_libelle ?? $rs->sport ?? $rs->sport_label ?? '';
                         $impact = $rs->impact_journalier ?? null;
+                        $duree = property_exists($rs, 'duree_jours') ? $rs->duree_jours : null;
                     }
                     ?>
                     <tr>
@@ -57,6 +62,9 @@
                         <td><?= esc($regime ?: '—') ?></td>
                         <td><?= esc($sport ?: '—') ?></td>
                         <td><?= esc($impact ?: '—') ?></td>
+                        <?php if ($selectedUser): ?>
+                            <td><?= $duree === null ? '—' : esc($duree) ?></td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
