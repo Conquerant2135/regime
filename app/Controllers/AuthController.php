@@ -8,9 +8,19 @@ use App\Models\UsersModel;
 
 class AuthController extends BaseController
 {
-    private function modelValidationRules()
+    private function loginValidationRules()
     {
         return ['email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]'];
+    }
+
+    private function wizardFistPageValidationRules()
+    {
+        return ['nom' => 'required|min_length[2]' , 'email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]' , 'naissance' => 'required'];
+    }
+
+    private function wizardSecondPageValidationRules()
+    {
+        return ['taille' => 'required|greater_than[0]|numeric' , 'poid' => 'required|greater_than[0]|numeric'];
     }
 
     public function loginForm()
@@ -24,7 +34,7 @@ class AuthController extends BaseController
         $password = $this->request->getPost('mot_de_passe');
         $usersModel = new UsersModel();
 
-        if (!$this->validate($this->modelValidationRules())) {
+        if (!$this->validate($this->loginValidationRules())) {
             return view('auth/login', [
                 'validation' => $this->validator
             ]);
@@ -66,23 +76,30 @@ class AuthController extends BaseController
         // je pense faire une validation a chaque changement de page est mieux
         // c'est ici qu'on va faire la validation depuis le premieer formulaire
 
+        if ( ! $this->validate($this->wizardFistPageValidationRules())) {
+            return view('auth/info_perso', ['validation' => $this->validator]);
+        }
+
         $nom = $this->request->getPost('nom');
         $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+        $password = $this->request->getPost('mot_de_passe');
         $naissance = $this->request->getPost('naissance');
 
         $data = ['nom' => $nom, 'email' => $email, 'mot_de_passe' => $password, 'date_naissance' => $naissance];
-        session()->set('inscription', $data);
+        session()->set('wizard_step_1', $data);
         return view('auth/info_perso');
     }
 
     public function inscription()
     {
-        $userData = session()->get('inscription');
-        session()->remove('inscription');
+        if ( ! $this->validate($this->wizardSecondPageValidationRules())) {
+            return view('auth/info_perso', ['validation' => $this->validator]);
+        }
+
+        $userData = session()->get('wizard_step_1');
+        session()->remove('wizard_step_1');
         $userData['taille'] = $this->request->getPost('taille');
         $userData['poids'] = $this->request->getPost('poid');
-        $userData[''] = $this->request->getPost('');
         // on fait la validation du 2eme formulaire , si tout est ok on va
         // inscrire la personne
         $usersModel = new UsersModel();

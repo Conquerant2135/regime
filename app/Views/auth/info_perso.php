@@ -17,19 +17,29 @@
         <section class="login">
             <div class="container">
                 <div class="form-container">
-                    <form action="/inscription"  method="post" class="login-form">
+                    <form action="/inscription" method="post" class="login-form">
                         <div class="form-group">
                             <h2>S'inscrire</h2>
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="Taille">Taille (en cm) :</label>
+                                <?php if (isset($validation) && $validation->hasError('taille')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('taille') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
                             <input type="number" step="any" name="taille" id="taille" placeholder="taille en cm">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="poid">Poid (en kg) :</label>
+                                <?php if (isset($validation) && $validation->hasError('poid')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('poid') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
                             <input type="number" step="0.01" name="poid" id="poid" placeholder="poid en kg">
                         </div>

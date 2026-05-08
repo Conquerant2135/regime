@@ -24,24 +24,45 @@
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="nom">Nom :</label>
+                                <?php if (isset($validation) && $validation->hasError('nom')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('nom') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
                             <input type="text" name="nom" id="nom" placeholder="Nom">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="email">Email :</label>
+                                <?php if (isset($validation) && $validation->hasError('email')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('email') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
                             <input type="email" name="email" id="email" placeholder="example@example.com">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="password">Mot de passe :</label>
+                                <?php if (isset($validation) && $validation->hasError('mot_de_passe')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('mot_de_passe') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
-                            <input type="password" name="password" id="password" placeholder="Mot de passe">
+
+                            <input type="password" name="mot_de_passe" id="password" placeholder="Mot de passe">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
                                 <label for="naissance">Date de naissance :</label>
+                                <?php if (isset($validation) && $validation->hasError('naissance')) { ?>
+                                    <small style="color:red">
+                                        <?= $validation->getError('naissance') ?>
+                                    </small>
+                                <?php } ?>
                             </div>
                             <input type="date" name="naissance" id="naissance">
                         </div>
