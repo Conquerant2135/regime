@@ -70,4 +70,33 @@ class PurchaseModel extends Model
             ->orderBy('date_choix', 'DESC')
             ->findAll();
     }
+
+    /**
+     * Crée un achat en réutilisant une connexion existante déjà dans une transaction.
+     */
+    public function createPurchaseOnConnection($db, int $clientId, int $regimeId, int $sportId, int $objectifId, int $duree, float $price): bool
+    {
+        $purchaseInserted = $db->table($this->table)->insert([
+            'regime_id' => $regimeId,
+            'sport_id' => $sportId,
+            'client_id' => $clientId,
+            'objectif_id' => $objectifId,
+            'date_choix' => date('Y-m-d'),
+            'duree' => $duree,
+        ]);
+
+        if (!$purchaseInserted) {
+            return false;
+        }
+
+        $mvtInserted = $db->table('mvt_compte')->insert([
+            'client_id' => $clientId,
+            'type_transaction' => 'debit',
+            'date_mouvement' => date('Y-m-d H:i:s'),
+            'montant' => $price,
+            'raison_id' => null,
+        ]);
+
+        return (bool) $mvtInserted;
+    }
 }

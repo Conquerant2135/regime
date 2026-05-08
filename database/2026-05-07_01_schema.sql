@@ -91,6 +91,7 @@ CREATE TABLE options (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	libelle VARCHAR(120) NOT NULL,
 	remise DECIMAL(5,2) NOT NULL DEFAULT 0,
+	prix_option DECIMAL(12,2) NOT NULL DEFAULT 0,
 	KEY uq_options_libelle (libelle),
 	CONSTRAINT chk_options_remise CHECK (remise BETWEEN 0 AND 100)
 );

@@ -19,6 +19,7 @@ $routes->post('/inscription', 'AuthController::inscription');
 
 $routes->get('/test-payement', 'PaiementController::testPayement');
 $routes->post('/acheter_regime_sport', 'PaiementController::acheterRegimeSport');
+$routes->post('/options/souscrire-gold', 'PaiementController::souscrireGold');
 
 // Routes Portefeuille
 $routes->get('/portefeuille', 'PortefeuilleController::index');

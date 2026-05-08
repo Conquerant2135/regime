@@ -4,6 +4,6 @@ VALUES
 	('gain'),
 	('imc ideal');
 
-INSERT INTO options (libelle, remise)
+INSERT INTO options (libelle, remise, prix_option)
 VALUES
-	('gold', 15.00);
+	('gold', 15.00, 49.90);

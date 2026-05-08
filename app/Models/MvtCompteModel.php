@@ -12,10 +12,7 @@ class MvtCompteModel extends Model
     protected $returnType       = 'array';
     protected $allowedFields    = ['client_id', 'type_transaction', 'date_mouvement', 'montant', 'raison_id'];
 
-    protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $useTimestamps = false;
 
     /**
      * Enregistre une transaction
