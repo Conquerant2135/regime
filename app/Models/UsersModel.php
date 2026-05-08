@@ -47,4 +47,25 @@ class UsersModel extends Model
     public function getByEmail(string $email){
         return $this->where('email' , $email)->first();
     }
+
+    /**
+     * Récupère le solde d'un client
+     * Calcul : SUM(crédit) - SUM(débit)
+     * 
+     * @param int $userId ID du client
+     * @return float Solde du client
+     */
+    public function getSolde($userId): float
+    {
+        $db = \Config\Database::connect();
+        
+        $result = $db->query(
+            "SELECT SUM(CASE WHEN type_transaction = 'credit' THEN montant ELSE -montant END) as solde 
+             FROM mvt_compte 
+             WHERE client_id = ?",
+            [$userId]
+        )->getRow();
+
+        return $result->solde ?? 0;
+    }
 }
