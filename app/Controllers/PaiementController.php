@@ -1,99 +1,108 @@
-<?php 
+<?php
+
 namespace App\Controllers;
 
+use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UsersModel;
+use App\Models\PurchaseModel;
+use App\Models\MvtCompteModel;
 
 class PaiementController extends BaseController
 {
-public function acheterRegimeSport()
-{
-    if (!session()->get('logged_in') || !session()->get('user_id')) {
-        return redirect()->to('/login')->with('error', 'Authentification requise');
+    private PurchaseModel $purchaseModel;
+    private UsersModel $usersModel;
+    private MvtCompteModel $mvtModel;
+
+    public function __construct()
+    {
+        $this->purchaseModel = new PurchaseModel();
+        $this->usersModel = new UsersModel();
+        $this->mvtModel = new MvtCompteModel();
     }
 
-    $clientId = session()->get('user_id');
-    $regimeId = $this->request->getPost('regime_id');
-    $sportId = $this->request->getPost('sport_id');
-    $objectifId = $this->request->getPost('objectif_id');
-    $duree = $this->request->getPost('duree');
-    $prixTotal = $this->request->getPost('prix');
-
-    if($objectifId == "gain"){
-        $objectifId = 1;
-    } elseif($objectifId == "imc ideal"){
-        $objectifId = 2;
-    }
-    elseif($objectifId == "perte de poids"){
-        $objectifId = 3;
-    }
-    elseif($objectifId == ""){
-        return redirect()->back()->with('error', 'Objectif invalide avec '. $objectifId);
-    }
-
-
-    if (!$regimeId || !$sportId || !$objectifId || !$duree || !$prixTotal) {
-        return redirect()->back()->with('error', 'Données manquantes');
-    }
-
-    // Vérifier le solde du client
-    $usersModel = new UsersModel();
-    $soldeClient = $usersModel->getSolde($clientId);
-
-    if ($soldeClient < $prixTotal) {
-        $montantManquant = $prixTotal - $soldeClient;
-        return redirect()->back()->with('error', 
-            "Solde insuffisant. Vous avez " . number_format($soldeClient, 2) . "€ mais il en faut " . number_format($prixTotal, 2) . "€. 
-            Montant manquant: " . number_format($montantManquant, 2) . "€"
-        );
-    }
-
-    $db = \Config\Database::connect();
-    $db->transStart();
-
-    try {
-        $db->table('regime_sports')->insert([
-            'regime_id' => $regimeId,
-            'sport_id' => $sportId,
-            'client_id' => $clientId,
-            'objectif_id' => $objectifId,
-            'date_choix' => date('Y-m-d'),
-            'duree' => $duree
-        ]);
-
-        $db->table('mvt_compte')->insert([
-            'client_id' => $clientId,
-            'type_transaction' => 'debit',
-            'date_mouvement' => date('Y-m-d H:i:s'),
-            'montant' => $prixTotal,
-            'raison_id' => null
-        ]);
-
-        $db->transComplete();
-
-        if ($db->transStatus() === false) {
-            return redirect()->back()->with('error', 'Erreur lors de la transaction');
+    /**
+     * Traite l'achat d'un couple régime-sport
+     */
+    public function acheterRegimeSport(): ResponseInterface
+    {
+        // Vérifier l'authentification
+        $clientId = (int)session()->get('user_id') ?? 0;
+        if (!session()->get('logged_in') || $clientId <= 0) {
+            return redirect()->to('/login')->with('error', 'Authentification requise');
         }
 
-        $nouveauSolde = $soldeClient - $prixTotal;
-        session()->set('solde', $nouveauSolde);
+        // Valider les données
+        if (!$this->validate([
+            'regime_id' => 'required|integer|greater_than[0]',
+            'sport_id' => 'required|integer|greater_than[0]',
+            'objectif_id' => 'required|integer|greater_than[0]',
+            'duree' => 'required|integer|greater_than[0]',
+            'prix' => 'required|numeric|greater_than[0]'
+        ])) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Données invalides: ' . implode(', ', $this->validator->getErrors()));
+        }
 
-        return redirect()->to('/portefeuille')->with('success', 'Achat effectué avec succès! Solde actuel : ' . number_format($nouveauSolde, 2) . '€');
-    } catch (\Exception $e) {
-        $db->transRollback();
-        return redirect()->back()->with('error', 'Erreur: ' . $e->getMessage());
+        // Récupérer les données validées
+        $regimeId = (int)$this->request->getPost('regime_id');
+        $sportId = (int)$this->request->getPost('sport_id');
+        $objectifId = (int)$this->request->getPost('objectif_id');
+        $duree = (int)$this->request->getPost('duree');
+        $prixTotal = (float)$this->request->getPost('prix');
+
+        // Vérifier le solde
+        $soldeClient = $this->mvtModel->getSoldeClient($clientId);
+        
+        if ($soldeClient < $prixTotal) {
+            $montantManquant = $prixTotal - $soldeClient;
+            return redirect()->back()->with('error',
+                "Solde insuffisant. Vous avez " . number_format($soldeClient, 2) . "€ " .
+                "mais il en faut " . number_format($prixTotal, 2) . "€. " .
+                "Montant manquant: " . number_format($montantManquant, 2) . "€"
+            );
+        }
+
+        try {
+            // Créer l'achat
+            $this->purchaseModel->createPurchase(
+                $clientId,
+                $regimeId,
+                $sportId,
+                $objectifId,
+                $duree,
+                $prixTotal
+            );
+
+            // Mettre à jour la session
+            $newBalance = $this->mvtModel->getSoldeClient($clientId);
+            session()->set('solde', $newBalance);
+
+            return redirect()->to('/portefeuille')
+                ->with('success',
+                    'Achat effectué avec succès! Solde actuel: ' . 
+                    number_format($newBalance, 2) . '€'
+                );
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur achat: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Erreur lors de l\'achat: ' . $e->getMessage());
+        }
     }
-}
-public function testPayement()
-{
-  
-    if (!session()->get('user_id')) {
-        session()->set([
-            'user_id' => 1,
-            'role' => 'user',
-            'logged_in' => true
-        ]);
+
+    /**
+     * Page de test des paiements
+     */
+    public function testPayement(): ResponseInterface|string
+    {
+        if (!session()->get('user_id')) {
+            session()->set([
+                'user_id' => 1,
+                'role' => 'user',
+                'logged_in' => true
+            ]);
+        }
+
+        return view('TestPayement');
     }
-    
-    return view('TestPayement');
-}
 }
