@@ -13,11 +13,11 @@
             <tbody>
                 <?php foreach ($regimesSports as $i => $rs):
                     if (is_array($rs)) {
-                        $regime = $rs['regime_name'] ?? $rs['regime'] ?? $rs['regime_label'] ?? '';
-                        $sport = $rs['sport_name'] ?? $rs['sport'] ?? $rs['sport_label'] ?? '';
+                        $regime = $rs['regime_nom'] ?? $rs['regime'] ?? $rs['regime_label'] ?? '';
+                        $sport = $rs['sport_libelle'] ?? $rs['sport'] ?? $rs['sport_label'] ?? '';
                     } else {
-                        $regime = $rs->regime_name ?? $rs->regime ?? $rs->regime_label ?? '';
-                        $sport = $rs->sport_name ?? $rs->sport ?? $rs->sport_label ?? '';
+                        $regime = $rs->regime_nom ?? $rs->regime ?? $rs->regime_label ?? '';
+                        $sport = $rs->sport_libelle ?? $rs->sport ?? $rs->sport_label ?? '';
                     }
                     ?>
                     <tr>
