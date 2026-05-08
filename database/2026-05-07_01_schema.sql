@@ -6,10 +6,11 @@ USE regime;
 CREATE TABLE clients (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	nom VARCHAR(120) NOT NULL,
-	email VARCHAR(190) NOT NULL,
+	email VARCHAR(190) NOT NULL UNIQUE,
 	date_naissance DATE NOT NULL,
 	taille DECIMAL(5,2) NOT NULL,
 	poids DECIMAL(6,2) NOT NULL,
+	role ENUM('user', 'admin') DEFAULT 'user', 
 	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT chk_clients_taille CHECK (taille > 0),
@@ -47,12 +48,13 @@ CREATE TABLE regimes (
 	CONSTRAINT chk_regimes_viande CHECK (pourcentage_viande >= 0),
 	CONSTRAINT chk_regimes_legume CHECK (pourcentage_volaille >= 0),
 	CONSTRAINT chk_regimes_poisson CHECK (pourcentage_poisson >= 0),
+	CONSTRAINT chk_total_prct CHECK ( pourcentage_poisson + pourcentage_volaille + pourcentage_viande <= 100),
 	CONSTRAINT chk_regimes_prix CHECK (prix_par_jour >= 0)
 );
 
 CREATE TABLE sports (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(120) NOT NULL UNIQUE
+	libelle VARCHAR(120) NOT NULL
 );
 
 CREATE TABLE regime_sports (
@@ -82,7 +84,7 @@ CREATE TABLE regime_sports (
 
 CREATE TABLE options (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	libelle VARCHAR(120) NOT NULL UNIQUE,
+	libelle VARCHAR(120) NOT NULL,
 	remise DECIMAL(5,2) NOT NULL DEFAULT 0,
 	CONSTRAINT chk_options_remise CHECK (remise BETWEEN 0 AND 100)
 );
@@ -130,10 +132,11 @@ CREATE TABLE mvt_compte (
 
 CREATE TABLE codes (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	valeur VARCHAR(100) NOT NULL UNIQUE,
+	valeur VARCHAR(100) NOT NULL,
 	gain DECIMAL(12,2) NOT NULL,
 	is_used TINYINT(1) NOT NULL DEFAULT 0,
 	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	UNIQUE KEY uq_codes_valeur (valeur),
 	CONSTRAINT chk_codes_gain CHECK (gain > 0)
 );
 

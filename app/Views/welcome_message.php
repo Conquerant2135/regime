@@ -12,7 +12,7 @@
     <style {csp-style-nonce}>
         * {
             transition: background-color 300ms ease, color 300ms ease;
-        }
+        }git 
         *:focus {
             background-color: rgba(221, 72, 20, .2);
             outline: none;
