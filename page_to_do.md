@@ -18,3 +18,12 @@
 + [ ] classe gold  
 + [ ] dashboard
 + [ ] profil utilisateur
+
+
++ [ ] dashboard 
+    + [ ] faire le compte des nombres d'utilisateurs gagnee par mois (graph)
+    + [ ] nombre d'utilisateur gold / repartition des users par gold et simple (pie chart)
+    + [ ] total d'argent gagnee par le site (nombre)
+    + [ ] repartition des users par leur imc (pie chart)
+    + [ ] nombre de regime vendu (pie chart)
+

@@ -65,7 +65,7 @@ class UsersModel extends Model
     /**
      * Récupère le solde d'un client
      * Calcul : SUM(crédit) - SUM(débit)
-     * 
+    *
      * @param int $userId ID du client
      * @return float Solde du client
      */
@@ -81,5 +81,16 @@ class UsersModel extends Model
         )->getRow();
 
         return (float)($result->solde ?? 0);
+    }
+
+    public function countUsersByInscriptionMonth(){
+        return $this->builder()
+            ->select('MONTH(created_at) as mois, YEAR(created_at) as annee, COUNT(*) as total')
+            ->where('role !=', 'admin')
+            ->groupBy('YEAR(created_at), MONTH(created_at)')
+            ->orderBy('YEAR(created_at)', 'ASC')
+            ->orderBy('MONTH(created_at)', 'ASC')
+            ->get()
+            ->getResultArray();
     }
 }

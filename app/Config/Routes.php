@@ -6,6 +6,7 @@ use App\Controllers\PaiementController;
 /**
  * @var RouteCollection $routes
  */
+
 $routes->get('/', 'Home::index');
 $routes->post('/imc/calculer', 'Home::calculerImc');
 $routes->get('/regime-sport', 'RegimeSportController::getRegimeSport');
@@ -44,6 +45,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 // groupe de route accessible uniquement pour ceux qui on un role d'admin
 $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboard');
+});
+
+$routes->group('api' , ['filter' => 'admin'], function ($routes) {
+    $routes->get('userInscription', 'UsersController::countUserByInscriptionApi');
 });
 
 $routes->get('/logout', 'AuthController::logout');

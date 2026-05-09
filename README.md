@@ -8,6 +8,9 @@
 
 ## Technologies
 
-+ php - codeigniter
-+ mysql / postgresql
-+ html / scss
++ php 8.2 
++ codeigniter 4
++ mysql
++ html / css
++ javascript
++ chart.js
