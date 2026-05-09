@@ -43,5 +43,34 @@
         </div>
         <div class="footer-copy">© <?= date('Y') ?> Fitness Régime</div>
     </footer>
+
+    <!-- Bouton scroll to top -->
+    <button class="scroll-to-top" id="scrollToTopBtn" aria-label="Retour en haut">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <script>
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        
+        // Affiche/masque le bouton au scroll
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+        
+        // Scroll smooth au clic
+        scrollToTopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
 </html>
