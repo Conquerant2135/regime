@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\ClientOptionsModel;
+use App\Models\OptionModel;
 use App\Models\RegimeSportModel;
 use App\Models\ClientObjectifsModel;
 use App\Models\ObjectifsModel;
@@ -12,6 +14,8 @@ class RegimeSportController extends BaseController
     protected $clientObjectifsModel;
     protected $objectifsModel;
     protected $usersModel;
+    protected $clientOptionsModel;
+    protected $optionModel;
 
     public function __construct()
     {
@@ -19,6 +23,8 @@ class RegimeSportController extends BaseController
         $this->clientObjectifsModel = new ClientObjectifsModel();
         $this->objectifsModel = new ObjectifsModel();
         $this->usersModel = new UsersModel();
+        $this->clientOptionsModel = new ClientOptionsModel();
+        $this->optionModel = new OptionModel();
     }
 
     /**
@@ -30,13 +36,21 @@ class RegimeSportController extends BaseController
         $regimesSports = $this->regimeSportModel->getAllCombinaisons();
         $userObjectif = null;
         $selectedUser = null;
+        $clientOption = null;
+        $goldOption = $this->optionModel->getByLibelle('gold');
+        $goldRemisePreview = (float) ($goldOption['remise'] ?? 0);
+        $goldOptionPrice = (float) ($goldOption['prix_option'] ?? 0);
 
         if ($selectedUserId) {
-            $selectedUser = $this->usersModel->find((int) $selectedUserId);
+            $selectedUserId = (int) $selectedUserId;
+            $selectedUser = $this->usersModel->find($selectedUserId);
+            $clientOption = $this->clientOptionsModel->getLatestOptionByClient($selectedUserId);
+            $goldRemiseClient = $this->clientOptionsModel->getGoldRemiseForClient($selectedUserId);
 
             if ($selectedUser) {
                 // Récupère le dernier objectif enregistré pour l'utilisateur sélectionné
-                $userObjectifRow = $this->clientObjectifsModel->getLatestObjectifByClient((int) $selectedUserId);
+                $userObjectifRow = $this->clientObjectifsModel->getLatestObjectifByClient($selectedUserId);
+                $hasGold = $goldRemiseClient > 0;
 
                 if (!empty($userObjectifRow)) {
                     $objectif = $this->objectifsModel->find($userObjectifRow['objectif_id']);
@@ -73,16 +87,38 @@ class RegimeSportController extends BaseController
                         if ($impact === 0.0 || $impact === null) {
                             $row['duree_jours'] = null;
                             $row['cout_total'] = null;
+                            $row['cout_total_original'] = null;
+                            $row['cout_total_gold'] = null;
+                            $row['cout_total_gold_with_option'] = null;
                         } else {
                             $duree = (int) ceil(abs($actionPoids) / max(abs($impact), 0.00001));
                             $row['duree_jours'] = $duree;
 
                             if ($rowPrixJournalier > 0) {
-                                $row['cout_total'] = round($rowPrixJournalier * $duree, 2);
+                                $coutOriginal = round($rowPrixJournalier * $duree, 2);
+                                $coutGold = $goldRemisePreview > 0
+                                    ? round($coutOriginal * (1 - ($goldRemisePreview / 100)), 2)
+                                    : $coutOriginal;
+                                $coutGoldWithOption = $goldOptionPrice > 0
+                                    ? round($coutGold + $goldOptionPrice, 2)
+                                    : $coutGold;
+
+                                $row['cout_total_original'] = $coutOriginal;
+                                $row['cout_total_gold'] = $coutGold;
+                                $row['cout_total_gold_with_option'] = $coutGoldWithOption;
+                                $row['cout_total'] = $hasGold ? $coutGold : $coutOriginal;
                             } else {
                                 $row['cout_total'] = null;
+                                $row['cout_total_original'] = null;
+                                $row['cout_total_gold'] = null;
+                                $row['cout_total_gold_with_option'] = null;
                             }
                         }
+
+                        $row['gold_active'] = $hasGold;
+                        $row['gold_remise'] = $goldRemisePreview;
+                        $row['gold_remise_client'] = $goldRemiseClient;
+                        $row['gold_option_price'] = $goldOptionPrice;
 
                         $enhanced[] = $row;
                     }
@@ -100,7 +136,11 @@ class RegimeSportController extends BaseController
             'regimesSports' => $regimesSports,
             'userObjectif' => $userObjectif,
             'selectedUserId' => $selectedUserId,
-            'selectedUser' => $selectedUser
+            'selectedUser' => $selectedUser,
+            'clientOption' => $clientOption,
+            'goldOption' => $goldOption,
+            'goldRemisePreview' => $goldRemisePreview,
+            'goldOptionPrice' => $goldOptionPrice
         ];
 
         return view('regime_sport/liste', $data);
