@@ -158,12 +158,15 @@ Dashboard Admin - Fitness Régime
         bg: '#f4f7fb'
     };
 
-    function transformDate(annee , mois){
-        const date = new Date(annee , mois-1);
-        return date.toLocaleString('fr-FR', { month: 'short' , year : 'numeric' });
+    function transformDate(annee, mois) {
+        const date = new Date(annee, mois - 1);
+        return date.toLocaleString('fr-FR', {
+            month: 'short',
+            year: 'numeric'
+        });
     }
 
-    async function loadUserInscriptionChart() {
+    async function loadUsersInscriptionChart() {
         const response = await fetch('/api/userInscription');
         const data = await response.json();
         const labels = data.map(item => `${transformDate(item.annee , item.mois)}`);
@@ -173,7 +176,7 @@ Dashboard Admin - Fitness Régime
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels : labels,
+                labels: labels,
                 datasets: [{
                     label: 'inscription',
                     data: total,
@@ -213,57 +216,163 @@ Dashboard Admin - Fitness Régime
         })
     }
 
-    loadUserInscriptionChart();
+    loadUsersInscriptionChart();
 
-    // 2. LINE CHART - Évolution des Revenus
-    const lineCtx = document.getElementById('lineChart').getContext('2d');
-    new Chart(lineCtx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-            datasets: [{
-                label: 'Revenus (€)',
-                data: [2400, 2890, 3200, 3590, 4100, 4800],
-                borderColor: chartColors.primaryStrong,
-                backgroundColor: 'rgba(34, 184, 166, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: chartColors.primaryStrong,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
+    // async function loadUsersReparitionChart() {
+    //     const response = await fetch('/api/userRepartition');
+    //     const data = await response.json();
+    //     const labels = data.map(item => `${transformDate(item.annee , item.mois)}`);
+    //     const total = data.map(item => item.total);
+    //     const ctx = document.getElementById('lineChart').getContext('2d');
+
+    //     new Chart(ctx, {
+    //         type: 'line',
+    //         data: {
+    //             labels: labels,
+    //             datasets: [{
+    //                 label: 'Repartition par type de compte',
+    //                 data: total,
+    //                 backgroundColor: chartColors.primary,
+    //                 borderRadius: 8,
+    //                 borderSkipped: false,
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false,
+    //             plugins: {
+    //                 legend: {
+    //                     display: false
+    //                 }
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     ticks: {
+    //                         color: chartColors.muted
+    //                     },
+    //                     grid: {
+    //                         color: 'rgba(92, 120, 146, 0.1)'
+    //                     }
+    //                 },
+    //                 x: {
+    //                     ticks: {
+    //                         color: chartColors.muted
+    //                     },
+    //                     grid: {
+    //                         display: false
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     })
+    // }
+
+    async function gainArgentParMoisChart() {
+        const response = await fetch('/api/userDepenses');
+        const data = await response.json();
+        const labels = data.map(item => `${transformDate(item.annee , item.mois)}`);
+        const total = data.map(item => item.total_depenses);
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenus (Ar)',
+                    data: total,
+                    borderColor: chartColors.primaryStrong,
+                    backgroundColor: 'rgba(34, 184, 166, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.primaryStrong,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: chartColors.muted
-                    },
-                    grid: {
-                        color: 'rgba(92, 120, 146, 0.1)'
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 },
-                x: {
-                    ticks: {
-                        color: chartColors.muted
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: chartColors.muted
+                        },
+                        grid: {
+                            color: 'rgba(92, 120, 146, 0.1)'
+                        }
                     },
-                    grid: {
-                        display: false
+                    x: {
+                        ticks: {
+                            color: chartColors.muted
+                        },
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+    
+    gainArgentParMoisChart();
+    // // 2. LINE CHART - Évolution des Revenus
+    // const lineCtx = document.getElementById('lineChart').getContext('2d');
+    // new Chart(lineCtx, {
+    //     type: 'line',
+    //     data: {
+    //         labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    //         datasets: [{
+    //             label: 'Revenus (€)',
+    //             data: [2400, 2890, 3200, 3590, 4100, 4800],
+    //             borderColor: chartColors.primaryStrong,
+    //             backgroundColor: 'rgba(34, 184, 166, 0.1)',
+    //             fill: true,
+    //             tension: 0.4,
+    //             pointBackgroundColor: chartColors.primaryStrong,
+    //             pointBorderColor: '#fff',
+    //             pointBorderWidth: 2,
+    //             pointRadius: 5,
+    //             pointHoverRadius: 7
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         plugins: {
+    //             legend: {
+    //                 display: false
+    //             }
+    //         },
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true,
+    //                 ticks: {
+    //                     color: chartColors.muted
+    //                 },
+    //                 grid: {
+    //                     color: 'rgba(92, 120, 146, 0.1)'
+    //                 }
+    //             },
+    //             x: {
+    //                 ticks: {
+    //                     color: chartColors.muted
+    //                 },
+    //                 grid: {
+    //                     display: false
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
 
     // 3. PIE CHART - Distribution des Régimes
     const pieCtx = document.getElementById('pieChart').getContext('2d');

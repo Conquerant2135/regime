@@ -24,3 +24,14 @@ INSERT INTO users (
 ('Lina Perrin', 'lina.perrin.2026@example.com', '1996-01-14', 167.00, 62.00, 'test123', 'user', '2026-04-04 10:10:00', '2026-04-04 10:10:00'),
 ('Samir Meunier', 'samir.meunier.2026@example.com', '1991-09-02', 182.00, 86.40, 'test123', 'user', '2026-04-29 19:25:00', '2026-04-29 19:25:00'),
 ('Chloe Henry', 'chloe.henry.2026@example.com', '1995-12-06', 169.00, 64.30, 'test123', 'user', '2026-05-07 11:41:00', '2026-05-07 11:41:00');
+
+SELECT
+    MAX(co.date_option) AS last_option,
+    COALESCE(opt.libelle, 'normal') AS option_type,
+    COALESCE(co.option_id , 0) AS co.option_id
+    COUNT(co.option_id) AS total
+FROM users u
+LEFT JOIN client_options co ON co.client_id = u.id
+LEFT JOIN options opt ON opt.id = co.option_id
+WHERE u.role != 'admin'
+GROUP BY opt.libelle;

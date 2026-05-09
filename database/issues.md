@@ -1,0 +1,1 @@
++ on ne peut pas compter les users par role car ils le probleme des users et le left join ne marche pas bien 

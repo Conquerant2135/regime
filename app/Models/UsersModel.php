@@ -30,13 +30,18 @@ class UsersModel extends Model
 
     // Validation
     protected $validationRules      = ['email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]'];
-    protected $validationMessages   = ['email' =>
-                                            ['required' => 'Un email est obligaroire',
-                                            'valid_email' => 'Le format du mail est incorrect',],
-                                        'mot_de_passe' =>
-                                            ['required' => 'Un mot de passe est obligatoire',
-                                            'min_length[6]' => 'Mot de passe trop court',]
-                                        ];
+    protected $validationMessages   = [
+        'email' =>
+        [
+            'required' => 'Un email est obligaroire',
+            'valid_email' => 'Le format du mail est incorrect',
+        ],
+        'mot_de_passe' =>
+        [
+            'required' => 'Un mot de passe est obligatoire',
+            'min_length[6]' => 'Mot de passe trop court',
+        ]
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -65,7 +70,7 @@ class UsersModel extends Model
     /**
      * Récupère le solde d'un client
      * Calcul : SUM(crédit) - SUM(débit)
-    *
+     *
      * @param int $userId ID du client
      * @return float Solde du client
      */
@@ -83,13 +88,55 @@ class UsersModel extends Model
         return (float)($result->solde ?? 0);
     }
 
-    public function countUsersByInscriptionMonth(){
+    public function countUsersByInscriptionMonth()
+    {
         return $this->builder()
             ->select('MONTH(created_at) as mois, YEAR(created_at) as annee, COUNT(*) as total')
             ->where('role !=', 'admin')
             ->groupBy('YEAR(created_at), MONTH(created_at)')
             ->orderBy('YEAR(created_at)', 'ASC')
             ->orderBy('MONTH(created_at)', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function coutUsersByAccountType()
+    {
+        $db = \Config\Database::connect();
+
+        return $db->table('users u')
+            ->select('
+        COALESCE(opt.libelle, "normal") as option_type,
+        COUNT(co.option_id) as total
+    ')
+            ->join('client_options co', 'co.client_id = u.id', 'left')
+            ->join('options opt', 'opt.id = co.option_id', 'left')
+            ->where('u.role !=', 'admin')
+            ->groupBy('opt.libelle')
+            ->get()
+            ->getResultArray();
+    }
+
+    /**
+     * Récupère les dépenses des utilisateurs groupées par année et par mois.
+     *
+     * @return array<int, array{annee:string, mois:string, total_depenses:string, nombre_transactions:string}>
+     */
+    public function getDepensesByMonthAndYear(): array
+    {
+        $db = \Config\Database::connect();
+
+        return $db->table('mvt_compte')
+            ->select([
+                'YEAR(date_mouvement) as annee',
+                'MONTH(date_mouvement) as mois',
+                'SUM(montant) as total_depenses',
+                'COUNT(*) as nombre_transactions',
+            ])
+            ->where('type_transaction', 'debit')
+            ->groupBy('YEAR(date_mouvement), MONTH(date_mouvement)')
+            ->orderBy('YEAR(date_mouvement)', 'ASC')
+            ->orderBy('MONTH(date_mouvement)', 'ASC')
             ->get()
             ->getResultArray();
     }

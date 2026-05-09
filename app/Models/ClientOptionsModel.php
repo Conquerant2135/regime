@@ -39,7 +39,7 @@ class ClientOptionsModel extends Model
         return is_array($option)
             && strtolower((string) ($option['libelle'] ?? '')) === 'gold';
     }
-
+    
     public function getGoldRemiseForClient(int $clientId): float
     {
         $option = $this->getLatestOptionByClient($clientId);

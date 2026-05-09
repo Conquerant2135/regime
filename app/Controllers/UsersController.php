@@ -13,4 +13,17 @@ class UsersController extends BaseController
         $result = $usersModel->countUsersByInscriptionMonth();
         return $this->response->setJSON($result);
     }
+
+    public function countUserByAccoutType(){
+        $usersModel = new UsersModel();
+        $result = $usersModel->coutUsersByAccountType();
+        return $this->response->setJSON($result);
+    }
+
+    public function depensesParMoisEtAnneeApi(){
+        $usersModel = new UsersModel();
+        $result = $usersModel->getDepensesByMonthAndYear();
+
+        return $this->response->setJSON($result);
+    }
 }
