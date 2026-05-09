@@ -8,6 +8,28 @@ use App\Models\UsersModel;
 
 class AuthController extends BaseController
 {
+    private function getDefaultPostLoginRedirect(string $role): string
+    {
+        return $role === 'admin' ? '/admin/dashboard' : '/portefeuille';
+    }
+
+    private function getIntendedRedirect(): ?string
+    {
+        $intendedUrl = session()->get('intended_url');
+
+        if (!is_string($intendedUrl) || $intendedUrl === '') {
+            return null;
+        }
+
+        session()->remove('intended_url');
+
+        if ($intendedUrl === '/login' || str_starts_with($intendedUrl, 'http')) {
+            return null;
+        }
+
+        return $intendedUrl;
+    }
+
     private function loginValidationRules()
     {
         return ['email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]'];
@@ -25,6 +47,11 @@ class AuthController extends BaseController
 
     public function loginForm()
     {
+        if (session()->get('logged_in')) {
+            $target = $this->getIntendedRedirect() ?? $this->getDefaultPostLoginRedirect((string) session()->get('role'));
+            return redirect()->to($target);
+        }
+
         return view('auth/login');
     }
 
@@ -49,6 +76,9 @@ class AuthController extends BaseController
         if ($user['mot_de_passe'] === $password) {
             // Récupérer le solde du client
             $solde = $usersModel->getSolde($user['id']);
+
+            $intendedRedirect = $this->getIntendedRedirect();
+            $defaultRedirect = $this->getDefaultPostLoginRedirect((string) $user['role']);
             
             session()->set([
                 'user_id' => $user['id'],
@@ -61,10 +91,11 @@ class AuthController extends BaseController
             if ($user['role'] === 'admin') {
                 return redirect()->to('/admin/dashboard');
             }
-            return view('test_login');
+
+            return redirect()->to($intendedRedirect ?? $defaultRedirect)
+                ->with('success', 'Connexion réussie.');
         } else {
             return view('auth/login', [ 'wrong' => 'Mot de passe incorrect']);
-            return redirect()->to('/regime-sport');
         }
     }
 
@@ -122,6 +153,6 @@ class AuthController extends BaseController
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login');
+        return redirect()->to('/');
     }
 }

@@ -25,7 +25,7 @@
                             <div class="form-label">
                                 <label for="nom">Nom :</label>
                                 <?php if (isset($validation) && $validation->hasError('nom')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('nom') ?>
                                     </small>
                                 <?php } ?>
@@ -36,7 +36,7 @@
                             <div class="form-label">
                                 <label for="email">Email :</label>
                                 <?php if (isset($validation) && $validation->hasError('email')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('email') ?>
                                     </small>
                                 <?php } ?>
@@ -47,7 +47,7 @@
                             <div class="form-label">
                                 <label for="password">Mot de passe :</label>
                                 <?php if (isset($validation) && $validation->hasError('mot_de_passe')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('mot_de_passe') ?>
                                     </small>
                                 <?php } ?>
@@ -59,7 +59,7 @@
                             <div class="form-label">
                                 <label for="naissance">Date de naissance :</label>
                                 <?php if (isset($validation) && $validation->hasError('naissance')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('naissance') ?>
                                     </small>
                                 <?php } ?>

@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\ClientOptionsModel;
 use App\Models\OptionModel;
+use App\Models\PurchaseModel;
 use App\Models\RegimeSportModel;
 use App\Models\ClientObjectifsModel;
 use App\Models\ObjectifsModel;
@@ -16,6 +17,7 @@ class RegimeSportController extends BaseController
     protected $usersModel;
     protected $clientOptionsModel;
     protected $optionModel;
+    protected $purchaseModel;
 
     public function __construct()
     {
@@ -25,10 +27,12 @@ class RegimeSportController extends BaseController
         $this->usersModel = new UsersModel();
         $this->clientOptionsModel = new ClientOptionsModel();
         $this->optionModel = new OptionModel();
+        $this->purchaseModel = new PurchaseModel();
     }
 
     /**
-     * Affiche la liste des couples régimes et sports pour l'utilisateur connecté
+     * Affiche la liste des couples régimes et sports.
+     * Si l'utilisateur est connecté, ajoute les informations personnalisées.
      */
     public function getRegimeSport()
     {
@@ -40,17 +44,31 @@ class RegimeSportController extends BaseController
         $goldOption = $this->optionModel->getByLibelle('gold');
         $goldRemisePreview = (float) ($goldOption['remise'] ?? 0);
         $goldOptionPrice = (float) ($goldOption['prix_option'] ?? 0);
+        $hasGold = false;
+
+        $priseCount = 0;
+        $perteCount = 0;
+
+        foreach ($regimesSports as $combinaison) {
+            $impact = (float) ($combinaison['impact_journalier'] ?? 0);
+
+            if ($impact > 0) {
+                $priseCount++;
+            } elseif ($impact < 0) {
+                $perteCount++;
+            }
+        }
 
         if ($selectedUserId) {
             $selectedUserId = (int) $selectedUserId;
             $selectedUser = $this->usersModel->find($selectedUserId);
             $clientOption = $this->clientOptionsModel->getLatestOptionByClient($selectedUserId);
             $goldRemiseClient = $this->clientOptionsModel->getGoldRemiseForClient($selectedUserId);
+            $hasGold = $goldRemiseClient > 0;
 
             if ($selectedUser) {
                 // Récupère le dernier objectif enregistré pour l'utilisateur sélectionné
                 $userObjectifRow = $this->clientObjectifsModel->getLatestObjectifByClient($selectedUserId);
-                $hasGold = $goldRemiseClient > 0;
 
                 if (!empty($userObjectifRow)) {
                     $objectif = $this->objectifsModel->find($userObjectifRow['objectif_id']);
@@ -119,16 +137,69 @@ class RegimeSportController extends BaseController
                         $row['gold_remise'] = $goldRemisePreview;
                         $row['gold_remise_client'] = $goldRemiseClient;
                         $row['gold_option_price'] = $goldOptionPrice;
+                        $row['buy_enabled'] = true;
 
                         $enhanced[] = $row;
                     }
 
                     $regimesSports = $enhanced;
                 }
+            } else {
+                $clientOption = null;
             }
         }
-        else {
-            $regimesSports = [];
+
+        if (!$selectedUserId) {
+            $enhanced = [];
+
+            foreach ($regimesSports as $rs) {
+                $row = is_array($rs) ? $rs : (array) $rs;
+                $impact = isset($row['impact_journalier']) ? (float) $row['impact_journalier'] : null;
+                $rowPrixJournalier = 0.0;
+
+                if (isset($row['prix_par_jour']) && $row['prix_par_jour'] !== '') {
+                    $rowPrixJournalier = (float) $row['prix_par_jour'];
+                } elseif (isset($row['prix_journalier']) && $row['prix_journalier'] !== '') {
+                    $rowPrixJournalier = (float) $row['prix_journalier'];
+                }
+
+                $row['duree_jours'] = null;
+                $row['cout_total'] = null;
+                $row['cout_total_original'] = null;
+                $row['cout_total_gold'] = null;
+                $row['cout_total_gold_with_option'] = null;
+
+                if ($impact !== null && $rowPrixJournalier > 0) {
+                    $row['duree_jours'] = 0;
+                    $row['cout_total'] = $rowPrixJournalier;
+                    $row['cout_total_original'] = $rowPrixJournalier;
+                    $row['cout_total_gold'] = $goldRemisePreview > 0
+                        ? round($rowPrixJournalier * (1 - ($goldRemisePreview / 100)), 2)
+                        : $rowPrixJournalier;
+                    $row['cout_total_gold_with_option'] = $goldOptionPrice > 0
+                        ? round($row['cout_total_gold'] + $goldOptionPrice, 2)
+                        : $row['cout_total_gold'];
+                }
+
+                $row['gold_active'] = $hasGold;
+                $row['gold_remise'] = $goldRemisePreview;
+                $row['gold_remise_client'] = $hasGold ? $goldRemisePreview : 0;
+                $row['gold_option_price'] = $goldOptionPrice;
+                $row['buy_enabled'] = false;
+
+                $enhanced[] = $row;
+            }
+
+            $regimesSports = $enhanced;
+        }
+
+        // Récupère tous les objectifs pour la sélection si l'utilisateur n'en a pas
+        $allObjectives = $this->objectifsModel->findAll();
+        $showObjectiveSelector = false;
+        
+        // Affiche le sélecteur d'objectif si : pas connecté OU connecté sans objectif
+        if (!$selectedUserId || ($selectedUserId && empty($userObjectif))) {
+            $showObjectiveSelector = true;
         }
 
         $data = [
@@ -140,10 +211,91 @@ class RegimeSportController extends BaseController
             'clientOption' => $clientOption,
             'goldOption' => $goldOption,
             'goldRemisePreview' => $goldRemisePreview,
-            'goldOptionPrice' => $goldOptionPrice
+            'goldOptionPrice' => $goldOptionPrice,
+            'isLoggedIn' => (bool) session()->get('logged_in'),
+            'priseCount' => $priseCount,
+            'perteCount' => $perteCount,
+            'totalCombinaisons' => count($regimesSports),
+            'allObjectives' => $allObjectives,
+            'showObjectiveSelector' => $showObjectiveSelector,
         ];
 
         return view('regime_sport/liste', $data);
+    }
+
+    /**
+     * Sauvegarde l'objectif sélectionné par l'utilisateur.
+     */
+    public function setObjectif()
+    {
+        $objectifId = (int) $this->request->getPost('objectif_id');
+        $actionPoids = (float) ($this->request->getPost('action_poids') ?? 0);
+        $clientId = (int) session()->get('user_id');
+
+        if (!$clientId) {
+            return redirect()->to('/login')->with('error', 'Vous devez être connecté.');
+        }
+
+        if (!$objectifId || !$this->objectifsModel->find($objectifId)) {
+            return redirect()->to('/regime-sport')->with('error', 'Objectif invalide.');
+        }
+
+        // Sauvegarde le nouvel objectif
+        $data = [
+            'client_id' => $clientId,
+            'objectif_id' => $objectifId,
+            'date_choix' => date('Y-m-d H:i:s'),
+            'action_poids' => $actionPoids > 0 ? $actionPoids : null,
+        ];
+
+        if ($this->clientObjectifsModel->insert($data, false)) {
+            // Succès - redirection
+            return redirect()->to('/regime-sport')->with('success', 'Objectif défini avec succès. La page va se rafraîchir avec votre objectif.');
+        } else {
+            // Erreur avec détails de validation
+            $errors = $this->clientObjectifsModel->errors();
+            $errorMsg = !empty($errors) ? implode(', ', $errors) : 'Erreur lors de la sauvegarde de l\'objectif.';
+            log_message('error', 'Erreur ClientObjectifsModel: ' . json_encode($errors) . ' | Data: ' . json_encode($data));
+            return redirect()->to('/regime-sport')->with('error', $errorMsg);
+        }
+    }
+
+    /**
+     * Affiche les régimes déjà achetés par l'utilisateur connecté.
+     */
+    public function monRegime()
+    {
+        $clientId = (int) session()->get('user_id');
+
+        if (!session()->get('logged_in') || $clientId <= 0) {
+            return redirect()->to('/login')->with('error', 'Authentification requise');
+        }
+
+        $selectedUser = $this->usersModel->find($clientId);
+        $purchasedRegimes = $this->purchaseModel->getPurchasedDetailsByClient($clientId);
+
+        $totalPackages = count($purchasedRegimes);
+        $totalDays = 0;
+        $estimatedTotal = 0.0;
+
+        foreach ($purchasedRegimes as $purchase) {
+            $duree = (int) ($purchase['duree'] ?? 0);
+            $prixParJour = (float) ($purchase['prix_par_jour'] ?? 0);
+
+            $totalDays += $duree;
+            $estimatedTotal += $prixParJour * $duree;
+        }
+
+        $data = [
+            'title' => 'Mon Régime',
+            'selectedUser' => $selectedUser,
+            'purchasedRegimes' => $purchasedRegimes,
+            'totalPackages' => $totalPackages,
+            'totalDays' => $totalDays,
+            'estimatedTotal' => $estimatedTotal,
+        ];
+
+        return view('regime_sport/mon_regime', $data);
     }
 }
 

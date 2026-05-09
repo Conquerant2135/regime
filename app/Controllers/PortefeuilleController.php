@@ -3,18 +3,33 @@
 namespace App\Controllers;
 
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\ClientObjectifsModel;
+use App\Models\ClientOptionsModel;
 use App\Models\MvtCompteModel;
 use App\Models\CodeModel;
+use App\Models\ObjectifsModel;
+use App\Models\PurchaseModel;
+use App\Models\UsersModel;
 
 class PortefeuilleController extends BaseController
 {
     private MvtCompteModel $mvtModel;
     private CodeModel $codeModel;
+    private UsersModel $usersModel;
+    private ClientObjectifsModel $clientObjectifsModel;
+    private ObjectifsModel $objectifsModel;
+    private ClientOptionsModel $clientOptionsModel;
+    private PurchaseModel $purchaseModel;
 
     public function __construct()
     {
         $this->mvtModel = new MvtCompteModel();
         $this->codeModel = new CodeModel();
+        $this->usersModel = new UsersModel();
+        $this->clientObjectifsModel = new ClientObjectifsModel();
+        $this->objectifsModel = new ObjectifsModel();
+        $this->clientOptionsModel = new ClientOptionsModel();
+        $this->purchaseModel = new PurchaseModel();
     }
 
     /**
@@ -28,7 +43,6 @@ class PortefeuilleController extends BaseController
             return redirect()->to('/login')->with('error', 'Authentification requise');
         }
 
-        // Récupérer les données
         $solde = $this->mvtModel->getSoldeClient($clientId);
         $historique = $this->mvtModel->getHistorique($clientId);
 
@@ -40,7 +54,62 @@ class PortefeuilleController extends BaseController
 
         return view('portefeuille/index', [
             'solde' => $solde,
-            'historique' => $historique
+            'historique' => $historique,
+        ]);
+    }
+
+    /**
+     * Affiche le profil du compte utilisateur.
+     */
+    public function compte(): ResponseInterface|string
+    {
+        $clientId = (int) session()->get('user_id') ?? 0;
+        if (!session()->get('logged_in') || $clientId <= 0) {
+            return redirect()->to('/login')->with('error', 'Authentification requise');
+        }
+
+        $user = $this->usersModel->find($clientId);
+        $latestObjectifRow = $this->clientObjectifsModel->getLatestObjectifByClient($clientId);
+        $latestObjectif = null;
+        if (!empty($latestObjectifRow)) {
+            $objectif = $this->objectifsModel->find($latestObjectifRow['objectif_id']);
+            $latestObjectif = $objectif['libelle'] ?? null;
+        }
+
+        $latestOption = $this->clientOptionsModel->getLatestOptionWithDetails($clientId);
+        $purchasedRegimes = $this->purchaseModel->getPurchasedDetailsByClient($clientId);
+
+        $memberSince = null;
+        if (!empty($user['created_at'])) {
+            $memberSince = date('d/m/Y', strtotime((string) $user['created_at']));
+        }
+
+        $birthDate = null;
+        $age = null;
+        if (!empty($user['date_naissance'])) {
+            $birthDate = date('d/m/Y', strtotime((string) $user['date_naissance']));
+            try {
+                $age = (new \DateTimeImmutable((string) $user['date_naissance']))->diff(new \DateTimeImmutable('now'))->y;
+            } catch (\Throwable $throwable) {
+                $age = null;
+            }
+        }
+
+        $userInitials = '';
+        if (!empty($user['nom'])) {
+            $parts = preg_split('/\s+/', trim((string) $user['nom'])) ?: [];
+            $userInitials = strtoupper(substr((string) ($parts[0] ?? ''), 0, 1) . substr((string) ($parts[1] ?? $parts[0] ?? ''), 0, 1));
+        }
+
+        return view('compte/index', [
+            'user' => $user,
+            'latestObjectif' => $latestObjectif,
+            'latestOption' => $latestOption,
+            'purchasedCount' => count($purchasedRegimes),
+            'memberSince' => $memberSince,
+            'birthDate' => $birthDate,
+            'age' => $age,
+            'userInitials' => $userInitials,
         ]);
     }
 

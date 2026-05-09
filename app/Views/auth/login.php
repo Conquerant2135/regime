@@ -25,12 +25,12 @@
                             <div class="form-label">
                                 <label for="email">Email : </label>
                                 <?php if (isset($notFound)) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $notFound ?>
                                     </small>
                                 <?php } ?>
                                 <?php if (isset($validation) && $validation->hasError('email')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('email') ?>
                                     </small>
                                 <?php } ?>
@@ -41,12 +41,12 @@
                             <div class="form-label">
                                 <label for="password">Mot de passe :</label>
                                 <?php if (isset($validation) && $validation->hasError('mot_de_passe')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('mot_de_passe') ?>
                                     </small>
                                 <?php } ?>
                                 <?php if (isset($wrong)) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $wrong ?>
                                     </small>
                                 <?php } ?>

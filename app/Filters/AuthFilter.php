@@ -26,6 +26,16 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (!session()->get('logged_in')) {
+            $uri = $request->getUri();
+            $target = $uri->getPath();
+            $query = $uri->getQuery();
+
+            if (!empty($query)) {
+                $target .= '?' . $query;
+            }
+
+            session()->set('intended_url', $target);
+
             return redirect()->to('/login');
         }
     }

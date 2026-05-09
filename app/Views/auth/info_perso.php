@@ -25,7 +25,7 @@
                             <div class="form-label">
                                 <label for="Taille">Taille (en cm) :</label>
                                 <?php if (isset($validation) && $validation->hasError('taille')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('taille') ?>
                                     </small>
                                 <?php } ?>
@@ -36,7 +36,7 @@
                             <div class="form-label">
                                 <label for="poid">Poid (en kg) :</label>
                                 <?php if (isset($validation) && $validation->hasError('poid')) { ?>
-                                    <small style="color:red">
+                                    <small class="form-error">
                                         <?= $validation->getError('poid') ?>
                                     </small>
                                 <?php } ?>

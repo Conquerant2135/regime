@@ -37,7 +37,7 @@
 
             <div class="sidebar-bottom">
                 <?php $userLabel = session()->get('userEmail') ?? session()->get('userNom') ?? 'Utilisateur'; ?>
-                <a href="<?= site_url('logout') ?>" class="user-row" style="color:#fff;text-decoration:none">
+                <a href="<?= site_url('logout') ?>" class="user-row user-row-link">
                     <div class="avatar"><?= esc(substr($userLabel, 0, 2)) ?></div>
                     <div class="user-info">
                         <div class="name"><?= esc($userLabel) ?></div>

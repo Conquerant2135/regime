@@ -7,8 +7,8 @@ use CodeIgniter\Model;
 class ClientObjectifsModel extends Model
 {
     protected $table = 'client_objectifs';
-    protected $primaryKey = ['client_id', 'objectif_id', 'date_choix'];
-    protected $useAutoIncrement = false;
+    protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
@@ -27,8 +27,8 @@ class ClientObjectifsModel extends Model
     protected $validationRules = [
         'client_id' => 'required|integer',
         'objectif_id' => 'required|integer',
-        'date_choix' => 'required|valid_date',
-        'action_poids' => 'numeric'
+        'date_choix' => 'required',
+        'action_poids' => 'permit_empty|numeric'
     ];
     protected $validationMessages = [];
     protected $skipValidation = false;

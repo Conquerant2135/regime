@@ -7,7 +7,11 @@ use App\Controllers\PaiementController;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/regime-sport', 'RegimeSportController::getRegimeSport', ['filter' => 'auth']);
+$routes->post('/imc/calculer', 'Home::calculerImc');
+$routes->get('/regime-sport', 'RegimeSportController::getRegimeSport');
+$routes->post('/regime-sport/set-objectif', 'RegimeSportController::setObjectif', ['filter' => 'auth']);
+$routes->get('/mon-regime', 'RegimeSportController::monRegime', ['filter' => 'auth']);
+$routes->get('/mon-compte', 'PortefeuilleController::compte', ['filter' => 'auth']);
 
 $routes->get('/login', 'AuthController::loginForm');
 $routes->post('/login', 'AuthController::login');
@@ -22,13 +26,14 @@ $routes->post('/acheter_regime_sport', 'PaiementController::acheterRegimeSport')
 $routes->post('/options/souscrire-gold', 'PaiementController::souscrireGold');
 
 // Routes Portefeuille
-$routes->get('/portefeuille', 'PortefeuilleController::index');
+$routes->get('/portefeuille', 'PortefeuilleController::index', ['filter' => 'auth']);
 $routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCode');
 
 // Routes Debug (à supprimer après testing)
 $routes->get('/debug_wallet', 'DebugController::wallet');
 $routes->post('/debug_wallet_ajax', 'DebugController::walletAjax');
 $routes->get('/test_ajax', function() { return view('test_ajax'); });
+$routes->get('/debug_objectives', 'DebugController::objectives');
 
 // grouper dans une route de ce style les chemins destinees aux personnes qui
 // sont connectés et les users simple (peut etre les admins ne doivent pas passer ici aussi)

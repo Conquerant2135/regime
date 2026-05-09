@@ -72,6 +72,34 @@ class PurchaseModel extends Model
     }
 
     /**
+     * Récupère les achats d'un client avec les libellés régime, sport et objectif.
+     */
+    public function getPurchasedDetailsByClient(int $clientId): array
+    {
+        return $this->select([
+                'regime_sports.regime_id',
+                'regime_sports.sport_id',
+                'regime_sports.client_id',
+                'regime_sports.objectif_id',
+                'regime_sports.date_choix',
+                'regime_sports.duree',
+                'regimes.pourcentage_viande',
+                'regimes.pourcentage_volaille',
+                'regimes.pourcentage_poisson',
+                'regimes.prix_par_jour',
+                'regimes.impact_journalier',
+                'sports.libelle AS sport_libelle',
+                'objectifs.libelle AS objectif_libelle',
+            ])
+            ->join('regimes', 'regimes.id = regime_sports.regime_id', 'left')
+            ->join('sports', 'sports.id = regime_sports.sport_id', 'left')
+            ->join('objectifs', 'objectifs.id = regime_sports.objectif_id', 'left')
+            ->where('regime_sports.client_id', $clientId)
+            ->orderBy('regime_sports.date_choix', 'DESC')
+            ->findAll();
+    }
+
+    /**
      * Crée un achat en réutilisant une connexion existante déjà dans une transaction.
      */
     public function createPurchaseOnConnection($db, int $clientId, int $regimeId, int $sportId, int $objectifId, int $duree, float $price): bool

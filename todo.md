@@ -133,3 +133,46 @@ code
   - inserer une ligne dans mvt_compte 
 - il faut maintenant creer un repertoire dans vue : 
   - portefeuille ( c'est la qu.on fait les vues)
+
+
+# Amelioration de l'homogeneite du projet 
+
+## Comportement : 
+- Comportement le "/" doit conduire a un landing page 
+- Qu'est ce que qu'on doit trouver dans un landign page
+  - Navbar fixe : logo , Accueil,regime ,Mon compte,Mon regime  Connexion/Inscription
+    
+  - hero section 
+    - Titre accrocheur 
+    - Sous titre
+    - des inputs pour entrer les champ necessaire pour calculer un IMC
+    - Bouton "Calculer mon IMc" en Ajax
+  - section categories : X regimes +poids et Y regimes -poids
+  - tu peux ajouter d'autre chose
+- Footer 
+
+## Filtre 
+- Utilisateur connecte : 
+  - navbar : 
+    - connexion et inscription
+    - Mon compte doit demander de se connecter 
+    - Mon Regime doit demander de se connecter
+- Utilisateur  non connecte : 
+    - remplace connexion et inscription par solde
+    - Mon  Compte doit afficher le profil de l'utilisateur
+    - Mon Regime doit afficher une page de son regime vie regime_sport
+
+- Pour les deux : Regime doit lister tout les regime et sport existant dans la base 
+
+## Architecture 
+- utiliser des layouts commun pour l'homogeneite du code
+- decomposer les layouts et pour le minimum de redendonce
+- pour les pages des admin , oon verrai tout a l'heure mais il faut anticipe quand 
+
+## Design Important 
+- Theme accueillant comme le site "Comme j'aime" 
+- Choix la palette de couleur et declare les en tant que variables pour pouvoir les utiliser
+- 
+- utiliser scss pour minimaliser la redeondonce
+- utiliser des variables fidele a l'identite de la marque , taille fonts , couleur, gapping , etc ...
+
