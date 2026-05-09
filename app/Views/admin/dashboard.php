@@ -1,7 +1,7 @@
 <?= $this->extend('layout/admin') ?>
 
 <?= $this->section('title') ?>
-    Dashboard Admin - Fitness Régime
+Dashboard Admin - Fitness Régime
 <?= $this->endSection() ?>
 
 <!-- HEADER -->
@@ -158,49 +158,62 @@
         bg: '#f4f7fb'
     };
 
-    // 1. BAR CHART - Utilisateurs par Mois
-    const barCtx = document.getElementById('barChart').getContext('2d');
-    new Chart(barCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-            datasets: [{
-                label: 'Utilisateurs',
-                data: [145, 159, 175, 182, 195, 220],
-                backgroundColor: chartColors.primary,
-                borderRadius: 8,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
+    function transformDate(annee , mois){
+        const date = new Date(annee , mois-1);
+        return date.toLocaleString('fr-FR', { month: 'short' , year : 'numeric' });
+    }
+
+    async function loadUserInscriptionChart() {
+        const response = await fetch('/api/userInscription');
+        const data = await response.json();
+        const labels = data.map(item => `${transformDate(item.annee , item.mois)}`);
+        const total = data.map(item => item.total);
+        const ctx = document.getElementById('barChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels : labels,
+                datasets: [{
+                    label: 'inscription',
+                    data: total,
+                    backgroundColor: chartColors.primary,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: chartColors.muted
-                    },
-                    grid: {
-                        color: 'rgba(92, 120, 146, 0.1)'
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 },
-                x: {
-                    ticks: {
-                        color: chartColors.muted
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: chartColors.muted
+                        },
+                        grid: {
+                            color: 'rgba(92, 120, 146, 0.1)'
+                        }
                     },
-                    grid: {
-                        display: false
+                    x: {
+                        ticks: {
+                            color: chartColors.muted
+                        },
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
-        }
-    });
+        })
+    }
+
+    loadUserInscriptionChart();
 
     // 2. LINE CHART - Évolution des Revenus
     const lineCtx = document.getElementById('lineChart').getContext('2d');
