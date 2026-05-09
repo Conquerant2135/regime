@@ -16,7 +16,7 @@ class UsersController extends BaseController
 
     public function countUserByAccoutType(){
         $usersModel = new UsersModel();
-        $result = $usersModel->coutUsersByAccountType();
+        $result = $usersModel->countUsersByAccountType();
         return $this->response->setJSON($result);
     }
 

@@ -100,22 +100,24 @@ class UsersModel extends Model
             ->getResultArray();
     }
 
-    public function coutUsersByAccountType()
+    public function countUsersByAccountType(): array
     {
         $db = \Config\Database::connect();
 
         return $db->table('users u')
-            ->select('
-        COALESCE(opt.libelle, "normal") as option_type,
-        COUNT(co.option_id) as total
-    ')
+            ->select([
+                'COALESCE(opt.libelle, "normal") as option_type',
+                'COUNT(DISTINCT u.id) as total',
+            ])
             ->join('client_options co', 'co.client_id = u.id', 'left')
             ->join('options opt', 'opt.id = co.option_id', 'left')
             ->where('u.role !=', 'admin')
-            ->groupBy('opt.libelle')
+            ->groupBy('COALESCE(opt.libelle, "normal")')
+            ->orderBy('total', 'DESC')
             ->get()
             ->getResultArray();
     }
+
 
     /**
      * Récupère les dépenses des utilisateurs groupées par année et par mois.

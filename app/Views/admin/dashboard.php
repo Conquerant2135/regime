@@ -322,94 +322,52 @@ Dashboard Admin - Fitness Régime
             }
         });
     }
-    
-    gainArgentParMoisChart();
-    // // 2. LINE CHART - Évolution des Revenus
-    // const lineCtx = document.getElementById('lineChart').getContext('2d');
-    // new Chart(lineCtx, {
-    //     type: 'line',
-    //     data: {
-    //         labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-    //         datasets: [{
-    //             label: 'Revenus (€)',
-    //             data: [2400, 2890, 3200, 3590, 4100, 4800],
-    //             borderColor: chartColors.primaryStrong,
-    //             backgroundColor: 'rgba(34, 184, 166, 0.1)',
-    //             fill: true,
-    //             tension: 0.4,
-    //             pointBackgroundColor: chartColors.primaryStrong,
-    //             pointBorderColor: '#fff',
-    //             pointBorderWidth: 2,
-    //             pointRadius: 5,
-    //             pointHoverRadius: 7
-    //         }]
-    //     },
-    //     options: {
-    //         responsive: true,
-    //         maintainAspectRatio: false,
-    //         plugins: {
-    //             legend: {
-    //                 display: false
-    //             }
-    //         },
-    //         scales: {
-    //             y: {
-    //                 beginAtZero: true,
-    //                 ticks: {
-    //                     color: chartColors.muted
-    //                 },
-    //                 grid: {
-    //                     color: 'rgba(92, 120, 146, 0.1)'
-    //                 }
-    //             },
-    //             x: {
-    //                 ticks: {
-    //                     color: chartColors.muted
-    //                 },
-    //                 grid: {
-    //                     display: false
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
 
-    // 3. PIE CHART - Distribution des Régimes
-    const pieCtx = document.getElementById('pieChart').getContext('2d');
-    new Chart(pieCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Cétogène', 'Paléo', 'Végétarien', 'Vegan', 'Sans Gluten'],
-            datasets: [{
-                data: [848, 575, 1226, 990, 528],
-                backgroundColor: [
-                    chartColors.primary,
-                    chartColors.primaryStrong,
-                    chartColors.accent,
-                    '#a78bfa',
-                    '#60a5fa'
-                ],
-                borderColor: '#fff',
-                borderWidth: 3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: chartColors.muted,
-                        padding: 16,
-                        font: {
-                            size: 12
+    gainArgentParMoisChart();
+
+    async function repartitionClientsParOption() {
+        const response = await fetch('/api/userRepartition');
+        const data = await response.json();
+        const labels = data.map(item => item.option_type);
+        const total = data.map(item => item.total);
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: total,
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.primaryStrong,
+                        chartColors.accent,
+                        '#a78bfa',
+                        '#60a5fa'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: chartColors.muted,
+                            padding: 16,
+                            font: {
+                                size: 12
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+
+    repartitionClientsParOption();
 
     // 4. DOUGHNUT CHART - Statut des Régimes
     const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
