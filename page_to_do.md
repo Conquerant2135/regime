@@ -10,3 +10,11 @@
 + [ ] connection
     + demande email + mot de passe 
     
+
++ [ ] crud regime
++ [ ] crud sport
++ [ ] crud parametre
+    + [ ] classe gold et tout a modifier
++ [ ] classe gold  
++ [ ] dashboard
++ [ ] profil utilisateur
