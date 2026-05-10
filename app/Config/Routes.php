@@ -49,8 +49,14 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 
 $routes->group('api' , ['filter' => 'admin'], function ($routes) {
     $routes->get('userInscription', 'UsersController::countUserByInscriptionApi');
-    $routes->get('userRepartition', 'UsersController::countUserByAccoutType');
+
+    $routes->group('userRepartition', function ($routes){
+        $routes->get('typeCompte', 'UsersController::countUserByAccoutType');
+        $routes->get('imc', 'UsersController::countUserByAccoutType');
+    });
+    
     $routes->get('userDepenses', 'UsersController::depensesParMoisEtAnneeApi');
+    
 });
 
 $routes->get('/logout', 'AuthController::logout');
