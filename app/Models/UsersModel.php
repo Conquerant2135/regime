@@ -143,9 +143,20 @@ class UsersModel extends Model
             ->getResultArray();
     }
 
-    public function getRepartitionClientByImc(){
+    public function getRepartitionClientByIMC(){
+        // pour calculer l'imc on a besoin de la taille en cm , on divise par 100
+        // afin d'avoir la bonne conversion de taille
         return $this->builder()
-            ->select('')
-            ->where('role !=' , 'admin');
+            ->select('
+                CASE
+                    WHEN poids / POW(taille / 100 , 2) < 18.5 THEN "Insuffisance ponderale"
+                    WHEN poids / POW(taille / 100 , 2) < 25 THEN "Normal"
+                    WHEN poids / POW(taille / 100 , 2) < 30 THEN "Surpoid"
+                    ELSE "Obese"
+                END AS categorie_imc , COUNT(*) as total ')
+            ->where('role !=' , 'admin')
+            ->groupBy('categorie_imc')
+            ->get()
+            ->getResultArray();
     }
 }
