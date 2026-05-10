@@ -26,6 +26,9 @@
             <a class="wallet-pill" href="<?= site_url('portefeuille') ?>">
                 Solde: <?= number_format((float) (session()->get('solde') ?? 0), 2) ?> €
             </a>
+            <?php if (session()->get('logged_in')): ?>
+                <a class="logout-btn" href="<?= site_url('logout') ?>" title="Déconnexion">Déconnexion</a>
+            <?php endif; ?>
         </div>
     </header>
 
