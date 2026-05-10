@@ -59,7 +59,8 @@
 
             <span class="sidebar-title" style="margin-top: 28px;">⚙️ Paramètres</span>
             <nav class="sidebar-menu" aria-label="Menu parametres admin">
-                <a href="<?= site_url('/admin/options') ?>" class="sidebar-link <?= url_is('admin/options*') ? 'active' : '' ?>">
+                <a href="<?= site_url('/admin/options') ?>"
+                    class="sidebar-link <?= url_is('admin/options*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🔧</span>
                     <span>CRUD options</span>
                 </a>

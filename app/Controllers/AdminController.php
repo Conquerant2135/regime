@@ -46,16 +46,17 @@ class AdminController extends BaseController
         ];
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $mvtCompteModel = new MvtCompteModel();
         $usersModel = new UsersModel();
         $data = [
-                'totalCA' => $mvtCompteModel->getSoldePlateforme(),
-                'totalClient' => $usersModel->getNombreTotalClients(),
-                'imcMedian' => $usersModel->getIMCMedian(),
-                'revenuMoyen' => $mvtCompteModel->getRevenuMoyenParClient()
-                ];
-        return view("admin/dashboard" , $data);
+            'totalCA' => $mvtCompteModel->getSoldePlateforme(),
+            'totalClient' => $usersModel->getNombreTotalClients(),
+            'imcMedian' => $usersModel->getIMCMedian(),
+            'revenuMoyen' => $mvtCompteModel->getRevenuMoyenParClient()
+        ];
+        return view("admin/dashboard", $data);
     }
 
     public function regimes()
@@ -75,7 +76,7 @@ class AdminController extends BaseController
     {
         $rules = $this->getRegimeValidationRules();
 
-        if (! $this->validate($rules)) {
+        if (!$this->validate($rules)) {
             return redirect()->to(site_url(self::REGIMES_ROUTE))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
@@ -110,7 +111,7 @@ class AdminController extends BaseController
         $regimesModel = new RegimesModel();
         $regime = $regimesModel->find($id);
 
-        if (! $regime) {
+        if (!$regime) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -121,7 +122,7 @@ class AdminController extends BaseController
     {
         $rules = $this->getRegimeValidationRules();
 
-        if (! $this->validate($rules)) {
+        if (!$this->validate($rules)) {
             return redirect()->to(site_url('admin/regimes/update/' . $id))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
@@ -138,7 +139,7 @@ class AdminController extends BaseController
         }
 
         $regimesModel = new RegimesModel();
-        if (! $regimesModel->find($id)) {
+        if (!$regimesModel->find($id)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -160,7 +161,7 @@ class AdminController extends BaseController
         $regimesModel = new RegimesModel();
         $regime = $regimesModel->find($id);
 
-        if (! $regime) {
+        if (!$regime) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -200,7 +201,7 @@ class AdminController extends BaseController
 
     public function storeOption()
     {
-        if (! $this->validate($this->getOptionValidationRules())) {
+        if (!$this->validate($this->getOptionValidationRules())) {
             return redirect()->to(site_url(self::OPTIONS_ROUTE))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
@@ -219,14 +220,14 @@ class AdminController extends BaseController
 
     public function updateOption(int $id)
     {
-        if (! $this->validate($this->getOptionValidationRules())) {
+        if (!$this->validate($this->getOptionValidationRules())) {
             return redirect()->to(site_url(self::OPTIONS_ROUTE))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
 
         $optionsModel = new OptionModel();
-        if (! $optionsModel->find($id)) {
+        if (!$optionsModel->find($id)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -245,7 +246,7 @@ class AdminController extends BaseController
         $optionsModel = new OptionModel();
         $option = $optionsModel->find($id);
 
-        if (! $option) {
+        if (!$option) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -259,7 +260,7 @@ class AdminController extends BaseController
     {
         $rules = $this->getSportValidationRules();
 
-        if (! $this->validate($rules)) {
+        if (!$this->validate($rules)) {
             return redirect()->to(site_url(self::SPORTS_ROUTE))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
@@ -279,7 +280,7 @@ class AdminController extends BaseController
         $sportsModel = new SportsModel();
         $sport = $sportsModel->find($id);
 
-        if (! $sport) {
+        if (!$sport) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -290,14 +291,14 @@ class AdminController extends BaseController
     {
         $rules = $this->getSportValidationRules();
 
-        if (! $this->validate($rules)) {
+        if (!$this->validate($rules)) {
             return redirect()->to(site_url('admin/sports/update/' . $id))
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
 
         $sportsModel = new SportsModel();
-        if (! $sportsModel->find($id)) {
+        if (!$sportsModel->find($id)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
@@ -314,7 +315,7 @@ class AdminController extends BaseController
         $sportsModel = new SportsModel();
         $sport = $sportsModel->find($id);
 
-        if (! $sport) {
+        if (!$sport) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 

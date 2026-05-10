@@ -53,11 +53,14 @@ CRUD Options - Fitness Regime
             </div>
             <div>
                 <label for="remise" style="display:block; margin-bottom:6px; color: var(--muted);">Remise (%)</label>
-                <input type="number" name="remise" id="remise" step="0.01" min="0" max="100" value="<?= old('remise') ?>" required>
+                <input type="number" name="remise" id="remise" step="0.01" min="0" max="100"
+                    value="<?= old('remise') ?>" required>
             </div>
             <div>
-                <label for="prix_option" style="display:block; margin-bottom:6px; color: var(--muted);">Prix option</label>
-                <input type="number" name="prix_option" id="prix_option" step="0.01" min="0" value="<?= old('prix_option') ?>" required>
+                <label for="prix_option" style="display:block; margin-bottom:6px; color: var(--muted);">Prix
+                    option</label>
+                <input type="number" name="prix_option" id="prix_option" step="0.01" min="0"
+                    value="<?= old('prix_option') ?>" required>
             </div>
         </div>
 
@@ -71,8 +74,10 @@ CRUD Options - Fitness Regime
     <div class="dashboard-header" style="margin-bottom: 18px;">
         <span class="table-title" style="margin-bottom: 0;">Liste des options</span>
         <form method="get" action="<?= site_url($optionsRoute) ?>" style="display:flex; gap:10px; align-items:center;">
-            <input type="text" name="q" placeholder="Filtrer par libelle..." value="<?= esc($keyword ?? '') ?>" style="min-width: 260px;">
-            <button type="submit" class="wallet-pill" style="cursor:pointer; background: rgba(42, 143, 214, 0.10); border: 1px solid rgba(42, 143, 214, 0.24);">Filtrer</button>
+            <input type="text" name="q" placeholder="Filtrer par libelle..." value="<?= esc($keyword ?? '') ?>"
+                style="min-width: 260px;">
+            <button type="submit" class="wallet-pill"
+                style="cursor:pointer; background: rgba(42, 143, 214, 0.10); border: 1px solid rgba(42, 143, 214, 0.24);">Filtrer</button>
             <a href="<?= site_url($optionsRoute) ?>" class="wallet-pill">Reset</a>
         </form>
     </div>
@@ -101,25 +106,31 @@ CRUD Options - Fitness Regime
                             <form action="<?= site_url('admin/options/update/' . $option['id']) ?>" method="post">
                                 <?= csrf_field() ?>
                                 <td><?= (int) $option['id'] ?></td>
-                                <td><input type="text" name="libelle" value="<?= esc($optionLibelle) ?>" maxlength="120" required style="width: 100%;"></td>
-                                <td><input type="number" name="remise" step="0.01" min="0" max="100" value="<?= esc((string) $option['remise']) ?>" required style="width: 120px;"></td>
-                                <td><input type="number" name="prix_option" step="0.01" min="0" value="<?= esc((string) $option['prix_option']) ?>" required style="width: 140px;"></td>
+                                <td><input type="text" name="libelle" value="<?= esc($optionLibelle) ?>" maxlength="120"
+                                        required style="width: 100%;"></td>
+                                <td><input type="number" name="remise" step="0.01" min="0" max="100"
+                                        value="<?= esc((string) $option['remise']) ?>" required style="width: 120px;"></td>
+                                <td><input type="number" name="prix_option" step="0.01" min="0"
+                                        value="<?= esc((string) $option['prix_option']) ?>" required style="width: 140px;"></td>
                                 <td>
                                     <div style="display:flex; gap:8px; justify-content:center; align-items:center;">
-                                        <button type="submit" class="wallet-pill" style="padding:8px 14px; cursor:pointer;">Save</button>
+                                        <button type="submit" class="wallet-pill"
+                                            style="padding:8px 14px; cursor:pointer;">Save</button>
                             </form>
-                                        <form action="<?= site_url('admin/options/delete/' . $option['id']) ?>" method="post" onsubmit="return confirm('Etes-vous vraiment sur de vouloir supprimer l\'option &quot;<?= esc($confirmLibelle) ?>&quot; ? Cette action est irreversible.');">
-                                            <?= csrf_field() ?>
-                                            <button type="submit" class="wallet-pill" style="padding:8px 14px; cursor:pointer; border-color: rgba(217,79,79,0.35); color: var(--danger); background: rgba(217,79,79,0.08);">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                            <form action="<?= site_url('admin/options/delete/' . $option['id']) ?>" method="post"
+                                onsubmit="return confirm('Etes-vous vraiment sur de vouloir supprimer l\'option &quot;<?= esc($confirmLibelle) ?>&quot; ? Cette action est irreversible.');">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="wallet-pill"
+                                    style="padding:8px 14px; cursor:pointer; border-color: rgba(217,79,79,0.35); color: var(--danger); background: rgba(217,79,79,0.08);">Delete</button>
+                            </form>
+            </div>
+            </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    </tbody>
+    </table>
+</div>
 </div>
 
 <?= $this->endSection() ?>
