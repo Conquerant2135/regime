@@ -60,6 +60,10 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('sports/update/(:num)', 'AdminController::editSport/$1');
     $routes->post('sports/update/(:num)', 'AdminController::updateSport/$1');
     $routes->post('sports/delete/(:num)', 'AdminController::deleteSport/$1');
+    $routes->get('options', 'AdminController::options');
+    $routes->post('options', 'AdminController::storeOption');
+    $routes->post('options/update/(:num)', 'AdminController::updateOption/$1');
+    $routes->post('options/delete/(:num)', 'AdminController::deleteOption/$1');
 });
 
 // -----------------------------------------------------------------------------

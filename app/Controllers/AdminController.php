@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\MvtCompteModel;
+use App\Models\OptionModel;
 use App\Models\RegimesModel;
 use App\Models\SportsModel;
 use App\Models\UsersModel;
@@ -13,6 +14,7 @@ class AdminController extends BaseController
 {
     private const REGIMES_ROUTE = 'admin/regimes';
     private const SPORTS_ROUTE = 'admin/sports';
+    private const OPTIONS_ROUTE = 'admin/options';
 
     private function getRegimeValidationRules(): array
     {
@@ -32,6 +34,15 @@ class AdminController extends BaseController
     {
         return [
             'libelle' => 'required|min_length[2]|max_length[120]',
+        ];
+    }
+
+    private function getOptionValidationRules(): array
+    {
+        return [
+            'libelle' => 'required|min_length[2]|max_length[120]',
+            'remise' => 'required|decimal|greater_than_equal_to[0]|less_than_equal_to[100]',
+            'prix_option' => 'required|decimal|greater_than_equal_to[0]',
         ];
     }
 
@@ -170,6 +181,78 @@ class AdminController extends BaseController
         ];
 
         return view('admin/sport/crud', $data);
+    }
+
+    public function options()
+    {
+        $optionsModel = new OptionModel();
+        $keyword = trim((string) $this->request->getGet('q'));
+
+        if ($keyword !== '') {
+            $optionsModel->like('libelle', $keyword);
+        }
+
+        return view('admin/options/crud', [
+            'keyword' => $keyword,
+            'options' => $optionsModel->orderBy('libelle', 'ASC')->findAll(),
+        ]);
+    }
+
+    public function storeOption()
+    {
+        if (! $this->validate($this->getOptionValidationRules())) {
+            return redirect()->to(site_url(self::OPTIONS_ROUTE))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $optionsModel = new OptionModel();
+        $optionsModel->insert([
+            'libelle' => trim((string) $this->request->getPost('libelle')),
+            'remise' => (float) $this->request->getPost('remise'),
+            'prix_option' => (float) $this->request->getPost('prix_option'),
+        ]);
+
+        return redirect()->to(site_url(self::OPTIONS_ROUTE))
+            ->with('success', 'Option creee avec succes.');
+    }
+
+    public function updateOption(int $id)
+    {
+        if (! $this->validate($this->getOptionValidationRules())) {
+            return redirect()->to(site_url(self::OPTIONS_ROUTE))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $optionsModel = new OptionModel();
+        if (! $optionsModel->find($id)) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $optionsModel->update($id, [
+            'libelle' => trim((string) $this->request->getPost('libelle')),
+            'remise' => (float) $this->request->getPost('remise'),
+            'prix_option' => (float) $this->request->getPost('prix_option'),
+        ]);
+
+        return redirect()->to(site_url(self::OPTIONS_ROUTE))
+            ->with('success', 'Option mise a jour avec succes.');
+    }
+
+    public function deleteOption(int $id)
+    {
+        $optionsModel = new OptionModel();
+        $option = $optionsModel->find($id);
+
+        if (! $option) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $optionsModel->delete($id);
+
+        return redirect()->to(site_url(self::OPTIONS_ROUTE))
+            ->with('success', 'Option supprimee avec succes.');
     }
 
     public function storeSport()
