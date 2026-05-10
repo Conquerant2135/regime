@@ -37,7 +37,13 @@ class AuthController extends BaseController
 
     private function wizardFistPageValidationRules()
     {
-        return ['nom' => 'required|min_length[2]' , 'email' => 'required|valid_email', 'mot_de_passe' => 'required|min_length[6]' , 'naissance' => 'required'];
+        return [
+            'nom' => 'required|min_length[2]',
+            'email' => 'required|valid_email',
+            'mot_de_passe' => 'required|min_length[6]',
+            'naissance' => 'required',
+            'sexe' => 'required|in_list[homme,femme]'
+        ];
     }
 
     private function wizardSecondPageValidationRules()
@@ -122,8 +128,15 @@ class AuthController extends BaseController
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('mot_de_passe');
         $naissance = $this->request->getPost('naissance');
+        $sexe = $this->request->getPost('sexe');
 
-        $data = ['nom' => $nom, 'email' => $email, 'mot_de_passe' => $password, 'date_naissance' => $naissance];
+        $data = [
+            'nom' => $nom,
+            'email' => $email,
+            'mot_de_passe' => $password,
+            'date_naissance' => $naissance,
+            'sexe' => $sexe
+        ];
         session()->set('wizard_step_1', $data);
         return view('auth/info_perso');
     }

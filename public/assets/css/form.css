@@ -89,3 +89,37 @@ body {
     margin-top: 6px;
     font-size: 0.9rem;
 }
+
+/* Sex radio custom styles */
+.sex-options {
+    display: flex;
+    gap: 12px;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+}
+.sex-option {
+    position: relative;
+}
+.sex-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: auto;
+}
+.sex-option label {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(92, 120, 146, 0.18);
+    background: rgba(255, 255, 255, 0.86);
+    color: #183048;
+    cursor: pointer;
+    transition: all 0.12s ease-in-out;
+    user-select: none;
+}
+.sex-option input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, #2a8fd6, #22b8a6);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(34, 184, 166, 0.18);
+    transform: translateY(-2px);
+}

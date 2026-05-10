@@ -68,6 +68,27 @@
                         </div>
 
                         <div class="form-group">
+                            <div class="form-label">
+                                <label>Sexe :</label>
+                                <?php if (isset($validation) && $validation->hasError('sexe')) { ?>
+                                    <small class="form-error">
+                                        <?= $validation->getError('sexe') ?>
+                                    </small>
+                                <?php } ?>
+                            </div>
+                            <div class="sex-options">
+                                <div class="sex-option">
+                                    <input type="radio" id="sexe_homme" name="sexe" value="homme">
+                                    <label for="sexe_homme">Homme</label>
+                                </div>
+                                <div class="sex-option">
+                                    <input type="radio" id="sexe_femme" name="sexe" value="femme">
+                                    <label for="sexe_femme">Femme</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <input type="submit" value="Page suivante" class="btn btn-accept">
                         </div>
                     </form>
