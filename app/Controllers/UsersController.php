@@ -29,7 +29,7 @@ class UsersController extends BaseController
 
     public function getRepartitionClientByIMC(){
         $usersModel = new UsersModel();
-        $result = $usersModel->getRepartitionClientParIMC();
+        $result = $usersModel->getRepartitionClientByIMC();
         return $this->response->setJSON($result);
     }
 }

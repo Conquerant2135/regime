@@ -52,7 +52,7 @@ $routes->group('api' , ['filter' => 'admin'], function ($routes) {
 
     $routes->group('userRepartition', function ($routes){
         $routes->get('typeCompte', 'UsersController::countUserByAccoutType');
-        $routes->get('imc', 'UsersController::countUserByAccoutType');
+        $routes->get('imc', 'UsersController::getRepartitionClientByIMC');
     });
     
     $routes->get('userDepenses', 'UsersController::depensesParMoisEtAnneeApi');

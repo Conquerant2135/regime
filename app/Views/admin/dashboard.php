@@ -56,7 +56,7 @@ Dashboard Admin - Fitness Régime
 
     <!-- PIE CHART -->
     <div class="chart-card">
-        <span class="chart-title">🥧 Distribution des Régimes</span>
+        <span class="chart-title">🥧 Distribution des clients par type de compte</span>
         <div class="chart-container">
             <canvas id="pieChart"></canvas>
         </div>
@@ -218,56 +218,6 @@ Dashboard Admin - Fitness Régime
 
     loadUsersInscriptionChart();
 
-    // async function loadUsersReparitionChart() {
-    //     const response = await fetch('/api/userRepartition');
-    //     const data = await response.json();
-    //     const labels = data.map(item => `${transformDate(item.annee , item.mois)}`);
-    //     const total = data.map(item => item.total);
-    //     const ctx = document.getElementById('lineChart').getContext('2d');
-
-    //     new Chart(ctx, {
-    //         type: 'line',
-    //         data: {
-    //             labels: labels,
-    //             datasets: [{
-    //                 label: 'Repartition par type de compte',
-    //                 data: total,
-    //                 backgroundColor: chartColors.primary,
-    //                 borderRadius: 8,
-    //                 borderSkipped: false,
-    //             }]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             maintainAspectRatio: false,
-    //             plugins: {
-    //                 legend: {
-    //                     display: false
-    //                 }
-    //             },
-    //             scales: {
-    //                 y: {
-    //                     beginAtZero: true,
-    //                     ticks: {
-    //                         color: chartColors.muted
-    //                     },
-    //                     grid: {
-    //                         color: 'rgba(92, 120, 146, 0.1)'
-    //                     }
-    //                 },
-    //                 x: {
-    //                     ticks: {
-    //                         color: chartColors.muted
-    //                     },
-    //                     grid: {
-    //                         display: false
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     })
-    // }
-
     async function gainArgentParMoisChart() {
         const response = await fetch('/api/userDepenses');
         const data = await response.json();
@@ -326,7 +276,7 @@ Dashboard Admin - Fitness Régime
     gainArgentParMoisChart();
 
     async function repartitionClientsParOption() {
-        const response = await fetch('/api/userRepartition');
+        const response = await fetch('/api/userRepartition/typeCompte');
         const data = await response.json();
         const labels = data.map(item => item.option_type);
         const total = data.map(item => item.total);
@@ -369,41 +319,48 @@ Dashboard Admin - Fitness Régime
 
     repartitionClientsParOption();
 
-    // 4. DOUGHNUT CHART - Statut des Régimes
-    const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-    new Chart(doughnutCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Actif', 'Suspendu', 'Complété', 'Abandonné'],
-            datasets: [{
-                data: [2850, 340, 580, 200],
-                backgroundColor: [
-                    '#10b981',
-                    '#f59e0b',
-                    '#3b82f6',
-                    '#ef4444'
-                ],
-                borderColor: '#fff',
-                borderWidth: 3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: chartColors.muted,
-                        padding: 16,
-                        font: {
-                            size: 12
+    async function repartitionClientsParIMC() {
+        const reponse = await fetch('/api/userRepartition/imc');
+        const data = await reponse.json();
+        const labels = data.map(item => item.categorie_imc);
+        const total = data.map(item => item.total);
+        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: total,
+                    backgroundColor: [
+                        '#10b981',
+                        '#f59e0b',
+                        '#3b82f6',
+                        '#ef4444'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: chartColors.muted,
+                            padding: 16,
+                            font: {
+                                size: 12
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+
+    repartitionClientsParIMC();
 </script>
 
 <?= $this->endSection() ?>
