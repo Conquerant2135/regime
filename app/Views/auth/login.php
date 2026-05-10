@@ -19,6 +19,7 @@
             <div class="container">
                 <div class="form-container">
                     <form action="/login" class="login-form" method="post">
+                        <?= csrf_field() ?>
                         <div class="form-group">
                             <h2> Se connecter</h2>
                         </div>

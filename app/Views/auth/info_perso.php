@@ -18,6 +18,7 @@
             <div class="container">
                 <div class="form-container">
                     <form action="/inscription" method="post" class="login-form">
+                        <?= csrf_field() ?>
                         <div class="form-group">
                             <h2>S'inscrire</h2>
                         </div>

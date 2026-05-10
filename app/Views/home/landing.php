@@ -26,6 +26,7 @@
         <p>Renseignez vos informations pour obtenir une estimation rapide.</p>
 
         <form id="imc-form" class="imc-form">
+            <?= csrf_field() ?>
             <label>
                 Poids (kg)
                 <input type="number" name="poids" min="1" step="0.1" placeholder="Ex. 72">

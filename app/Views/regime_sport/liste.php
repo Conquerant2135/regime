@@ -52,6 +52,7 @@
                 </div>
                 
                 <form method="post" action="/regime-sport/set-objectif" class="objectif-form" id="objectifForm">
+                    <?= csrf_field() ?>
                     <div class="objectif-radios">
                         <?php foreach ($allObjectives as $obj): ?>
                             <label class="radio-label">
@@ -158,6 +159,7 @@
         </div>
         <?php if (empty($clientOption) || (isset($clientOption['libelle']) && strtolower((string) $clientOption['libelle']) !== 'gold')): ?>
             <form method="post" action="/options/souscrire-gold" class="inline-form">
+                <?= csrf_field() ?>
                 <button type="submit" class="btn btn-gold">
                     Passer au Gold
                 </button>
@@ -253,6 +255,7 @@
                                 <a class="btn btn-ghost" href="<?= site_url('login') ?>">Se connecter pour acheter</a>
                             <?php elseif ($gold_active): ?>
                                 <form method="post" action="/acheter_regime_sport" class="inline-form">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="regime_id" value="<?= esc((string)($regime_id ?? '')) ?>">
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
@@ -268,6 +271,7 @@
                                 </form>
                             <?php else: ?>
                                 <form method="post" action="/acheter_regime_sport" class="inline-form inline-form-gap">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="regime_id" value="<?= esc((string)($regime_id ?? '')) ?>">
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
@@ -283,6 +287,7 @@
                                 </form>
 
                                 <form method="post" action="/acheter_regime_sport" class="inline-form">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="regime_id" value="<?= esc((string)($regime_id ?? '')) ?>">
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
