@@ -106,13 +106,13 @@ class UsersModel extends Model
 
         return $db->table('users u')
             ->select([
-                'COALESCE(opt.libelle, "normal") as option_type',
+                'COALESCE(opt.libelle, "basique") as option_type',
                 'COUNT(DISTINCT u.id) as total',
             ])
             ->join('client_options co', 'co.client_id = u.id', 'left')
             ->join('options opt', 'opt.id = co.option_id', 'left')
             ->where('u.role !=', 'admin')
-            ->groupBy('COALESCE(opt.libelle, "normal")')
+            ->groupBy('COALESCE(opt.libelle, "basique")')
             ->orderBy('total', 'DESC')
             ->get()
             ->getResultArray();
@@ -141,5 +141,11 @@ class UsersModel extends Model
             ->orderBy('MONTH(date_mouvement)', 'ASC')
             ->get()
             ->getResultArray();
+    }
+
+    public function getRepartitionClientByImc(){
+        return $this->builder()
+            ->select('')
+            ->where('role !=' , 'admin');
     }
 }
