@@ -212,6 +212,7 @@ class RegimeSportController extends BaseController
             'goldOption' => $goldOption,
             'goldRemisePreview' => $goldRemisePreview,
             'goldOptionPrice' => $goldOptionPrice,
+            'hasGold' => $hasGold,
             'isLoggedIn' => (bool) session()->get('logged_in'),
             'priseCount' => $priseCount,
             'perteCount' => $perteCount,

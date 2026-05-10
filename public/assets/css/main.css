@@ -147,6 +147,19 @@ input::placeholder {
 	white-space: nowrap;
 }
 
+.nav-gold-crown {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 14px;
+	border-radius: 999px;
+	border: 1px solid rgba(245, 158, 11, 0.24);
+	background: rgba(245, 158, 11, 0.12);
+	color: #9a5f00;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
 .user-row-link {
 	color: #ffffff;
 	text-decoration: none;

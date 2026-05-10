@@ -21,6 +21,9 @@
                 <a href="<?= site_url('regime-sport') ?>">Régimes</a>
                 <a href="<?= site_url('mon-compte') ?>">Mon compte</a>
                 <a href="<?= site_url('mon-regime') ?>">Mon régime</a>
+                <?php if (!empty($isGoldMember)): ?>
+                    <span class="nav-gold-crown" title="Membre Gold" aria-label="Membre Gold">👑 Gold</span>
+                <?php endif; ?>
                 <?php if (session()->get('logged_in')): ?>
                     <a href="<?= site_url('logout') ?>">Déconnexion</a>
                     <?php if (session()->get('role') === 'admin') { ?>

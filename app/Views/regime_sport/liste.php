@@ -193,27 +193,29 @@
         </script>
     <?php endif; ?>
 
-    <section class="gold-banner">
-        <div>
-            <span class="eyebrow">Option Gold</span>
-            <strong><?= esc(number_format((float) ($goldRemisePreview ?? ($goldOption['remise'] ?? 0)), 2, '.', '')) ?>% de remise sur tous les régimes</strong>
-            <p>
-                <?php if (!empty($goldOptionPrice)): ?>
-                    Disponible pour <?= esc(number_format((float) $goldOptionPrice, 2, '.', '')) ?> €.
-                <?php else: ?>
-                    Activez Gold pour bénéficier de tarifs plus doux.
-                <?php endif; ?>
-            </p>
-        </div>
-        <?php if (empty($clientOption) || (isset($clientOption['libelle']) && strtolower((string) $clientOption['libelle']) !== 'gold')): ?>
-            <form method="post" action="/options/souscrire-gold" class="inline-form">
-                <?= csrf_field() ?>
-                <button type="submit" class="btn btn-gold">
-                    Passer au Gold
-                </button>
-            </form>
-        <?php endif; ?>
-    </section>
+    <?php if (empty($hasGold)): ?>
+        <section class="gold-banner">
+            <div>
+                <span class="eyebrow">Option Gold</span>
+                <strong><?= esc(number_format((float) ($goldRemisePreview ?? ($goldOption['remise'] ?? 0)), 2, '.', '')) ?>% de remise sur tous les régimes</strong>
+                <p>
+                    <?php if (!empty($goldOptionPrice)): ?>
+                        Disponible pour <?= esc(number_format((float) $goldOptionPrice, 2, '.', '')) ?> €.
+                    <?php else: ?>
+                        Activez Gold pour bénéficier de tarifs plus doux.
+                    <?php endif; ?>
+                </p>
+            </div>
+            <?php if (empty($clientOption) || (isset($clientOption['libelle']) && strtolower((string) $clientOption['libelle']) !== 'gold')): ?>
+                <form method="post" action="/options/souscrire-gold" class="inline-form">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-gold">
+                        Passer au Gold
+                    </button>
+                </form>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 
 
     <!-- Liste des couples régime-sport -->

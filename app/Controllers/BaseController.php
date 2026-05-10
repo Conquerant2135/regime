@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\ClientOptionsModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -40,6 +41,18 @@ abstract class BaseController extends Controller
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
+        $isGoldMember = false;
+        $clientId = (int) (session()->get('user_id') ?? 0);
+
+        if (session()->get('logged_in') && $clientId > 0) {
+            $clientOptionsModel = new ClientOptionsModel();
+            $isGoldMember = $clientOptionsModel->hasGoldOption($clientId);
+            session()->set('is_gold_member', $isGoldMember);
+        } else {
+            session()->remove('is_gold_member');
+        }
+
+        service('renderer')->setVar('isGoldMember', $isGoldMember);
         // $this->session = service('session');
     }
 }
