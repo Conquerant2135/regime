@@ -30,7 +30,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="number" step="any" name="taille" id="taille" placeholder="taille en cm">
+                            <input type="number" step="any" name="taille" id="taille" placeholder="taille en cm" value="<?= esc(old('taille')) ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -41,7 +41,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="number" step="0.01" name="poid" id="poid" placeholder="poid en kg">
+                            <input type="number" step="0.01" name="poid" id="poid" placeholder="poid en kg" value="<?= esc(old('poid')) ?>">
                         </div>
                         <div class="form-group">
                             <input type="submit" value="S'inscrire" class="btn btn-accept">

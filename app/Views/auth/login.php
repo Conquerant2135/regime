@@ -35,7 +35,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="email" name="email" id="email" placeholder="example@example.com" value="batman69@gmail.com">
+                            <input type="email" name="email" id="email" placeholder="example@example.com" value="<?= esc(old('email')) ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -51,7 +51,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="password" name="mot_de_passe" id="password" placeholder="Mot de passe" value="batman69">
+                            <input type="password" name="mot_de_passe" id="password" placeholder="Mot de passe">
                         </div>
                         <div class="form-group">
                             <p>Pas encore de compte ? <a href="/inscription/contact">S'inscrire</a></p>
