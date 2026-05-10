@@ -17,17 +17,18 @@ Dashboard Admin - Fitness Régime
     <div class="stat-card">
         <span class="stat-label">Utilisateurs Totaux</span>
         <span class="stat-value"><?= $totalClient ?></span>
-        <span class="stat-change positive">↑ 12% ce mois</span>
     </div>
     <div class="stat-card">
-        <span class="stat-label">Régimes Actifs</span>
-        <span class="stat-value">856</span>
-        <span class="stat-change positive">↑ 8% ce mois</span>
+        <span class="stat-label">Revenu moyen par utilisateur</span>
+        <span class="stat-value"><?= number_format($revenuMoyen , 2 , "," , " ") ?></span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Mediane IMC</span>
+        <span class="stat-value"><?= number_format($imcMedian , 2 , "," , " ") ?></span>
     </div>
     <div class="stat-card">
         <span class="stat-label">Revenus Totaux</span>
         <span class="stat-value">Ar <?= $totalCA ?></span>
-        <span class="stat-change positive">↑ 5% ce mois</span>
     </div>
 </div>
 
@@ -59,7 +60,7 @@ Dashboard Admin - Fitness Régime
 
     <!-- DOUGHNUT CHART -->
     <div class="chart-card">
-        <span class="chart-title">🎯 Statut des Régimes</span>
+        <span class="chart-title">🎯 Repartition des clients suivant leur IMC</span>
         <div class="chart-container">
             <canvas id="doughnutChart"></canvas>
         </div>

@@ -15,6 +15,8 @@ class AdminController extends BaseController
         $data = [
                 'totalCA' => $mvtCompteModel->getSoldePlateforme(),
                 'totalClient' => $usersModel->getNombreTotalClients(),
+                'imcMedian' => $usersModel->getIMCMedian(),
+                'revenuMoyen' => $mvtCompteModel->getRevenuMoyenParClient(),
                 ];
         return view("admin/dashboard" , $data);
     }

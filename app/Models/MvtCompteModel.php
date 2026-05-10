@@ -65,9 +65,20 @@ class MvtCompteModel extends Model
     {
         $montant = $this
             ->selectSum('montant')
-            ->where('type_transaction' , 'credit')
+            ->where('type_transaction', 'debit')
             ->first();
 
         return $montant['montant'];
+    }
+
+    public function getRevenuMoyenParClient()
+    {
+        $result = $this->builder()
+            ->select('SUM(montant) / COUNT(DISTINCT client_id) as revenu_moyen')
+            ->where('type_transaction', 'debit')
+            ->get()
+            ->getRowArray();
+
+        return $result['revenu_moyen'] ?? 0;
     }
 }

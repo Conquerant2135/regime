@@ -143,7 +143,8 @@ class UsersModel extends Model
             ->getResultArray();
     }
 
-    public function getRepartitionClientByIMC(){
+    public function getRepartitionClientByIMC()
+    {
         // pour calculer l'imc on a besoin de la taille en cm , on divise par 100
         // afin d'avoir la bonne conversion de taille
         return $this->builder()
@@ -154,20 +155,48 @@ class UsersModel extends Model
                     WHEN poids / POW(taille / 100 , 2) < 30 THEN "Surpoid"
                     ELSE "Obese"
                 END AS categorie_imc , COUNT(*) as total ')
-            ->where('role !=' , 'admin')
+            ->where('role !=', 'admin')
             ->groupBy('categorie_imc')
             ->get()
             ->getResultArray();
     }
 
-    public function getNombreTotalClients(){
+    public function getNombreTotalClients()
+    {
         $total = $this->builder()
-        ->select('COUNT(*) as total')
-        ->where('role !=','admin')
-        ->get()
-        ->getResultArray();
+            ->select('COUNT(*) as total')
+            ->where('role !=', 'admin')
+            ->get()
+            ->getResultArray();
 
         return $total[0]['total'];
     }
 
+    public function getIMCMedian()
+    {
+        $allIMC = $this->builder()
+            ->select('poids, taille')
+            ->where('role !=', 'admin')
+            ->get()
+            ->getResultArray();
+
+        $imcs = array_map(function ($u) {
+            return $u['poids'] / pow($u['taille'] / 100, 2);
+        }, $allIMC);
+
+        return $this->median($imcs);
+    }
+
+    private function median($imcs)
+    {
+        sort($imcs);
+        $count = count($imcs);
+        $milieu = floor($count / 2);
+
+        if ($count % 2) {
+            return $imcs[$milieu];
+        }
+
+        return ($imcs[$milieu - 1] + $imcs[$milieu]) / 2;
+    }
 }
