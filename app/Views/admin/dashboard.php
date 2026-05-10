@@ -92,7 +92,6 @@ Dashboard Admin - Fitness Régime
     </div>
 </div>
 
-
 <script src="/assets/scripts/dashboard.js">
 
 </script>

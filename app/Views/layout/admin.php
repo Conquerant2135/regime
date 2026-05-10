@@ -21,7 +21,7 @@
                 <a href="<?= site_url('/') ?>">Accueil</a>
                 <a href="<?= site_url('regime-sport') ?>">Régimes</a>
                 <a href="<?= site_url('mon-compte') ?>">Mon compte</a>
-                <a href="<?= site_url('logout') ?>">Déconnexion</a>
+                <a href="<?= site_url('/admin/dashboard') ?>">Dashboard admin</a>
             </nav>
             <a class="wallet-pill" href="<?= site_url('portefeuille') ?>">
                 Solde: <?= number_format((float) (session()->get('solde') ?? 0), 2) ?> €
@@ -35,21 +35,17 @@
         <aside class="dashboard-sidebar">
             <span class="sidebar-title">⚙️ Gestion</span>
             <nav class="sidebar-menu">
-                <a href="#" class="sidebar-link active">
+                <a href="<?= site_url('/admin/dashboard') ?>" class="sidebar-link active">
                     <span class="sidebar-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="sidebar-link">
-                    <span class="sidebar-icon">🏋️</span>
-                    <span>Régimes</span>
+                <a href="" class="sidebar-link">
+                    <span class="sidebar-icon">🥗</span>
+                    <span>CRUD Régimes</span>
                 </a>
                 <a href="#" class="sidebar-link">
-                    <span class="sidebar-icon">💪</span>
-                    <span>Sports</span>
-                </a>
-                <a href="#" class="sidebar-link">
-                    <span class="sidebar-icon">👥</span>
-                    <span>Utilisateurs</span>
+                    <span class="sidebar-icon">🏃‍♂️</span>
+                    <span>CRUD Sports</span>
                 </a>
             </nav>
 
@@ -57,7 +53,7 @@
             <nav class="sidebar-menu">
                 <a href="#" class="sidebar-link">
                     <span class="sidebar-icon">🔧</span>
-                    <span>Configuration</span>
+                    <span>CRUD configuration</span>
                 </a>
             </nav>
         </aside>

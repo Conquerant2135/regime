@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($title ?? 'Fitness Régime') ?></title>
     <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
 </head>
+
 <body class="site-body">
     <header class="site-header">
         <div class="site-nav">
@@ -21,9 +23,13 @@
                 <a href="<?= site_url('mon-regime') ?>">Mon régime</a>
                 <?php if (session()->get('logged_in')): ?>
                     <a href="<?= site_url('logout') ?>">Déconnexion</a>
+                    <?php if (session()->get('role') === 'admin') { ?>
+                        <a href="<?= site_url('/admin/dashboard') ?>">Dashboard admin</a>
+                    <?php  } ?>
                 <?php else: ?>
                     <a class="nav-cta" href="<?= site_url('login') ?>">Connexion / Inscription</a>
                 <?php endif; ?>
+
             </nav>
 
             <a class="wallet-pill" href="<?= site_url('portefeuille') ?>">
@@ -53,7 +59,7 @@
 
     <script>
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-        
+
         // Affiche/masque le bouton au scroll
         window.addEventListener('scroll', function() {
             if (window.pageYOffset > 300) {
@@ -62,7 +68,7 @@
                 scrollToTopBtn.classList.remove('show');
             }
         });
-        
+
         // Scroll smooth au clic
         scrollToTopBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -73,4 +79,5 @@
         });
     </script>
 </body>
+
 </html>
