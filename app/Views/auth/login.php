@@ -37,7 +37,8 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="email" name="email" id="email" placeholder="example@example.com" value="<?= esc(old('email')) ?>">
+                            <input type="email" name="email" id="email" placeholder="example@example.com"
+                                value="<?= esc(old('email')) ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">

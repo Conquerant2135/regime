@@ -6,7 +6,8 @@
         <span class="eyebrow">Votre parcours, plus simple</span>
         <h1>Un espace accueillant pour suivre votre régime et votre progression.</h1>
         <p>
-            Découvrez des régimes adaptés à votre objectif, calculez votre IMC en quelques secondes et gardez votre compte à portée de main.
+            Découvrez des régimes adaptés à votre objectif, calculez votre IMC en quelques secondes et gardez votre
+            compte à portée de main.
         </p>
 
         <div class="hero-stats">
@@ -70,36 +71,36 @@
 </section>
 
 <script>
-(() => {
-    const form = document.getElementById('imc-form');
-    const result = document.getElementById('imc-result');
+    (() => {
+        const form = document.getElementById('imc-form');
+        const result = document.getElementById('imc-result');
 
-    form?.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        result.classList.remove('error');
-        result.textContent = 'Calcul en cours...';
+        form?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            result.classList.remove('error');
+            result.textContent = 'Calcul en cours...';
 
-        try {
-            const response = await fetch('<?= site_url('imc/calculer') ?>', {
-                method: 'POST',
-                body: new FormData(form),
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
+            try {
+                const response = await fetch('<?= site_url('imc/calculer') ?>', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!data.success) {
+                if (!data.success) {
+                    result.classList.add('error');
+                    result.textContent = data.message || 'Impossible de calculer l’IMC.';
+                    return;
+                }
+
+                result.innerHTML = `<strong>IMC :</strong> ${data.imc} - <span>${data.categorie}</span>`;
+            } catch (error) {
                 result.classList.add('error');
-                result.textContent = data.message || 'Impossible de calculer l’IMC.';
-                return;
+                result.textContent = 'Impossible de calculer l’IMC pour le moment.';
             }
-
-            result.innerHTML = `<strong>IMC :</strong> ${data.imc} - <span>${data.categorie}</span>`;
-        } catch (error) {
-            result.classList.add('error');
-            result.textContent = 'Impossible de calculer l’IMC pour le moment.';
-        }
-    });
-})();
+        });
+    })();
 </script>
 <?= $this->endSection() ?>

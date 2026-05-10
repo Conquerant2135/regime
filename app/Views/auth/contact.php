@@ -43,7 +43,8 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="email" name="email" id="email" placeholder="example@example.com" value="<?= esc(old('email')) ?>">
+                            <input type="email" name="email" id="email" placeholder="example@example.com"
+                                value="<?= esc(old('email')) ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -80,11 +81,13 @@
                             </div>
                             <div class="sex-options">
                                 <div class="sex-option">
-                                    <input type="radio" id="sexe_homme" name="sexe" value="homme" <?= old('sexe') === 'homme' ? 'checked' : '' ?>>
+                                    <input type="radio" id="sexe_homme" name="sexe" value="homme"
+                                        <?= old('sexe') === 'homme' ? 'checked' : '' ?>>
                                     <label for="sexe_homme">Homme</label>
                                 </div>
                                 <div class="sex-option">
-                                    <input type="radio" id="sexe_femme" name="sexe" value="femme" <?= old('sexe') === 'femme' ? 'checked' : '' ?>>
+                                    <input type="radio" id="sexe_femme" name="sexe" value="femme"
+                                        <?= old('sexe') === 'femme' ? 'checked' : '' ?>>
                                     <label for="sexe_femme">Femme</label>
                                 </div>
                             </div>
