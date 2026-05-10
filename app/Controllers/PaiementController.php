@@ -58,8 +58,15 @@ class PaiementController extends BaseController
     public function acheterRegimeSport(): ResponseInterface
     {
         $clientId = (int) session()->get('user_id') ?? 0;
+        $userRole = (string) session()->get('role') ?? '';
+        
         if (!session()->get('logged_in') || $clientId <= 0) {
             return redirect()->to('/login')->with('error', 'Authentification requise');
+        }
+
+        // VÉRIFICATION DU RÔLE : Seuls les 'user' peuvent acheter
+        if ($userRole !== 'user') {
+            return redirect()->back()->with('error', 'Seuls les utilisateurs clients peuvent acheter des régimes');
         }
 
         if (
@@ -81,6 +88,11 @@ class PaiementController extends BaseController
         $objectifId = (int) $this->request->getPost('objectif_id');
         $duree = (int) $this->request->getPost('duree');
         $modeAchat = (string) $this->request->getPost('mode_achat');
+
+        // Validation durée > 0
+        if ($duree <= 0) {
+            return redirect()->back()->with('error', 'Durée invalide');
+        }
 
         $basePrice = $this->calculateRegimePrice($regimeId, $duree);
         if ($basePrice === null) {
@@ -120,6 +132,7 @@ class PaiementController extends BaseController
         try {
             $db->transStart();
 
+            // ÉTAPE 1 : Souscription Gold si nécessaire
             if ($modeAchat === 'gold' && !$hasGold) {
                 if (empty($goldOption['id']) || $goldOptionPrice <= 0) {
                     throw new \Exception('Option Gold introuvable');
@@ -130,15 +143,41 @@ class PaiementController extends BaseController
                     throw new \Exception('Impossible d\'activer Gold');
                 }
 
-                $goldMovement = $this->mvtModel->recordTransaction($clientId, 'debit', $goldOptionPrice);
+                // Enregistre le mouvement GOLD avec traçabilité
+                $goldMovement = $this->mvtModel->recordTransactionFull(
+                    $clientId, 
+                    'debit', 
+                    $goldOptionPrice,
+                    'souscription_gold',
+                    null,  // regime_id
+                    null,  // sport_id
+                    'Souscription à l\'option Gold'
+                );
                 if (!$goldMovement) {
                     throw new \Exception('Impossible d\'enregistrer le paiement Gold');
                 }
             }
 
+            // ÉTAPE 2 : Achat du régime + sport
             $purchaseOk = $this->purchaseModel->createPurchaseOnConnection($db, $clientId, $regimeId, $sportId, $objectifId, $duree, $prixRegimeAchat);
             if (!$purchaseOk) {
                 throw new \Exception('Impossible d\'enregistrer l\'achat du régime');
+            }
+
+            // ÉTAPE 3 : Enregistrement du mouvement compte RÉGIME avec traçabilité
+            $regimeMovement = $db->table('mvt_compte')->insert([
+                'client_id' => $clientId,
+                'type_transaction' => 'debit',
+                'date_mouvement' => date('Y-m-d H:i:s'),
+                'montant' => $prixRegimeAchat,
+                'mouvement_type' => 'achat_regime',
+                'regime_id' => $regimeId,
+                'sport_id' => $sportId,
+                'description' => 'Achat régime: ' . $duree . ' jour(s)'
+            ]);
+
+            if (!$regimeMovement) {
+                throw new \Exception('Impossible d\'enregistrer le paiement du régime');
             }
 
             $db->transComplete();
@@ -210,7 +249,16 @@ class PaiementController extends BaseController
                 throw new \Exception('Impossible d\'activer Gold');
             }
 
-            $movementOk = $this->mvtModel->recordTransaction($clientId, 'debit', $goldOptionPrice);
+            // Enregistre le mouvement GOLD avec traçabilité
+            $movementOk = $this->mvtModel->recordTransactionFull(
+                $clientId,
+                'debit',
+                $goldOptionPrice,
+                'souscription_gold',
+                null,
+                null,
+                'Souscription à l\'option Gold'
+            );
             if (!$movementOk) {
                 throw new \Exception('Impossible d\'enregistrer le paiement Gold');
             }

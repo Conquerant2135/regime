@@ -6,16 +6,16 @@ use CodeIgniter\Model;
 
 class PurchaseModel extends Model
 {
-    protected $table            = 'regime_sports';
-    protected $primaryKey       = 'id';
+    protected $table = 'regime_sports';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $allowedFields    = ['regime_id', 'sport_id', 'client_id', 'objectif_id', 'date_choix', 'duree'];
+    protected $returnType = 'array';
+    protected $allowedFields = ['regime_id', 'sport_id', 'client_id', 'objectif_id', 'date_choix', 'duree'];
 
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
 
     /**
      * Crée un achat avec transaction de débit
@@ -77,20 +77,20 @@ class PurchaseModel extends Model
     public function getPurchasedDetailsByClient(int $clientId): array
     {
         return $this->select([
-                'regime_sports.regime_id',
-                'regime_sports.sport_id',
-                'regime_sports.client_id',
-                'regime_sports.objectif_id',
-                'regime_sports.date_choix',
-                'regime_sports.duree',
-                'regimes.pourcentage_viande',
-                'regimes.pourcentage_volaille',
-                'regimes.pourcentage_poisson',
-                'regimes.prix_par_jour',
-                'regimes.impact_journalier',
-                'sports.libelle AS sport_libelle',
-                'objectifs.libelle AS objectif_libelle',
-            ])
+            'regime_sports.regime_id',
+            'regime_sports.sport_id',
+            'regime_sports.client_id',
+            'regime_sports.objectif_id',
+            'regime_sports.date_choix',
+            'regime_sports.duree',
+            'regimes.pourcentage_viande',
+            'regimes.pourcentage_volaille',
+            'regimes.pourcentage_poisson',
+            'regimes.prix_par_jour',
+            'regimes.impact_journalier',
+            'sports.libelle AS sport_libelle',
+            'objectifs.libelle AS objectif_libelle',
+        ])
             ->join('regimes', 'regimes.id = regime_sports.regime_id', 'left')
             ->join('sports', 'sports.id = regime_sports.sport_id', 'left')
             ->join('objectifs', 'objectifs.id = regime_sports.objectif_id', 'left')
@@ -101,6 +101,9 @@ class PurchaseModel extends Model
 
     /**
      * Crée un achat en réutilisant une connexion existante déjà dans une transaction.
+     * 
+     * ⚠️ IMPORTANT: Ce method N'INSÈRE que l'achat (regime_sports)
+     * Le mouvement compte doit être géré séparément avec traçabilité
      */
     public function createPurchaseOnConnection($db, int $clientId, int $regimeId, int $sportId, int $objectifId, int $duree, float $price): bool
     {
@@ -113,18 +116,7 @@ class PurchaseModel extends Model
             'duree' => $duree,
         ]);
 
-        if (!$purchaseInserted) {
-            return false;
-        }
-
-        $mvtInserted = $db->table('mvt_compte')->insert([
-            'client_id' => $clientId,
-            'type_transaction' => 'debit',
-            'date_mouvement' => date('Y-m-d H:i:s'),
-            'montant' => $price,
-            'raison_id' => null,
-        ]);
-
-        return (bool) $mvtInserted;
+        // ✅ Le mouvement compte est géré par le contrôleur avec traçabilité complète
+        return (bool) $purchaseInserted;
     }
 }

@@ -137,13 +137,6 @@ CREATE TABLE client_options (
         ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: raisons (Raisons de transactions)
-CREATE TABLE raisons (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    libelle VARCHAR(120) NOT NULL,
-    UNIQUE KEY uq_raisons_libelle (libelle)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Table: mvt_compte (Mouvements de compte/transactions)
 CREATE TABLE mvt_compte (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -151,15 +144,23 @@ CREATE TABLE mvt_compte (
     type_transaction ENUM('debit', 'credit') NOT NULL,
     date_mouvement DATETIME NOT NULL,
     montant DECIMAL(12,2) NOT NULL,
-    raison_id BIGINT UNSIGNED NULL,
+    description VARCHAR(255) NULL,
+    mouvement_type ENUM('achat_regime', 'souscription_gold', 'recharge_code', 'autre') DEFAULT 'autre',
+    regime_id BIGINT UNSIGNED NULL,
+    sport_id BIGINT UNSIGNED NULL,
     KEY idx_mvt_compte_client (client_id),
-    KEY idx_mvt_compte_raison (raison_id),
+    KEY idx_mvt_compte_regime (regime_id),
+    KEY idx_mvt_compte_sport (sport_id),
     CONSTRAINT fk_mvt_compte_client
         FOREIGN KEY (client_id) REFERENCES users (id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT fk_mvt_compte_raison
-        FOREIGN KEY (raison_id) REFERENCES raisons (id)
+    CONSTRAINT fk_mvt_compte_regime
+        FOREIGN KEY (regime_id) REFERENCES regimes (id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    CONSTRAINT fk_mvt_compte_sport
+        FOREIGN KEY (sport_id) REFERENCES sports (id)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
     CONSTRAINT chk_mvt_compte_montant CHECK (montant > 0)
@@ -269,39 +270,39 @@ INSERT INTO client_objectifs (client_id, objectif_id, date_choix, action_poids) 
     (15, 3, '2025-12-09 00:00:00', 0.000);
 
 -- Données: Mouvements de compte (transactions)
-INSERT INTO mvt_compte (client_id, type_transaction, date_mouvement, montant, raison_id) VALUES
-    (1, 'credit', '2025-06-03 09:15:00', 120000.00, NULL),
-    (2, 'debit', '2025-06-11 14:20:00', 35000.50, NULL),
-    (3, 'credit', '2025-06-28 18:10:00', 85000.00, NULL),
-    (4, 'debit', '2025-07-04 08:45:00', 42000.00, NULL),
-    (5, 'credit', '2025-07-15 12:30:00', 15000.00, NULL),
-    (6, 'debit', '2025-08-02 10:05:00', 28000.90, NULL),
-    (7, 'credit', '2025-08-08 16:40:00', 20000.00, NULL),
-    (8, 'debit', '2025-08-19 19:25:00', 64000.00, NULL),
-    (9, 'credit', '2025-08-27 09:50:00', 95000.00, NULL),
-    (10, 'debit', '2025-09-05 11:15:00', 18000.75, NULL),
-    (11, 'credit', '2025-09-14 14:55:00', 17500.00, NULL),
-    (12, 'debit', '2025-10-03 07:20:00', 52000.00, NULL),
-    (13, 'credit', '2025-10-09 13:05:00', 13000.00, NULL),
-    (14, 'debit', '2025-10-21 17:45:00', 47000.30, NULL),
-    (15, 'credit', '2025-11-02 09:10:00', 22000.00, NULL),
-    (1, 'debit', '2025-11-13 15:35:00', 39000.90, NULL),
-    (3, 'credit', '2025-11-26 20:05:00', 11000.00, NULL),
-    (2, 'debit', '2025-12-06 08:00:00', 25000.00, NULL),
-    (4, 'credit', '2025-12-12 12:20:00', 18000.00, NULL),
-    (5, 'debit', '2025-12-24 18:45:00', 71000.25, NULL),
-    (6, 'credit', '2026-01-04 09:30:00', 14500.00, NULL),
-    (7, 'debit', '2026-01-17 14:10:00', 33000.40, NULL),
-    (8, 'credit', '2026-01-29 19:55:00', 90000.00, NULL),
-    (9, 'debit', '2026-02-07 10:25:00', 58000.60, NULL),
-    (10, 'credit', '2026-02-18 16:15:00', 21000.00, NULL),
-    (11, 'debit', '2026-03-03 08:35:00', 44000.00, NULL),
-    (12, 'credit', '2026-03-16 13:50:00', 16000.00, NULL),
-    (13, 'debit', '2026-03-27 21:05:00', 29000.95, NULL),
-    (14, 'credit', '2026-04-05 09:00:00', 19000.00, NULL),
-    (15, 'debit', '2026-04-19 15:45:00', 72000.80, NULL),
-    (1, 'credit', '2026-05-06 11:10:00', 23000.00, NULL),
-    (2, 'debit', '2026-05-08 17:25:00', 38000.00, NULL);
+INSERT INTO mvt_compte (client_id, type_transaction, date_mouvement, montant) VALUES
+    (1, 'credit', '2025-06-03 09:15:00', 120000.00),
+    (2, 'debit', '2025-06-11 14:20:00', 35000.50),
+    (3, 'credit', '2025-06-28 18:10:00', 85000.00),
+    (4, 'debit', '2025-07-04 08:45:00', 42000.00),
+    (5, 'credit', '2025-07-15 12:30:00', 15000.00),
+    (6, 'debit', '2025-08-02 10:05:00', 28000.90),
+    (7, 'credit', '2025-08-08 16:40:00', 20000.00),
+    (8, 'debit', '2025-08-19 19:25:00', 64000.00),
+    (9, 'credit', '2025-08-27 09:50:00', 95000.00),
+    (10, 'debit', '2025-09-05 11:15:00', 18000.75),
+    (11, 'credit', '2025-09-14 14:55:00', 17500.00),
+    (12, 'debit', '2025-10-03 07:20:00', 52000.00),
+    (13, 'credit', '2025-10-09 13:05:00', 13000.00),
+    (14, 'debit', '2025-10-21 17:45:00', 47000.30),
+    (15, 'credit', '2025-11-02 09:10:00', 22000.00),
+    (1, 'debit', '2025-11-13 15:35:00', 39000.90),
+    (3, 'credit', '2025-11-26 20:05:00', 11000.00),
+    (2, 'debit', '2025-12-06 08:00:00', 25000.00),
+    (4, 'credit', '2025-12-12 12:20:00', 18000.00),
+    (5, 'debit', '2025-12-24 18:45:00', 71000.25),
+    (6, 'credit', '2026-01-04 09:30:00', 14500.00),
+    (7, 'debit', '2026-01-17 14:10:00', 33000.40),
+    (8, 'credit', '2026-01-29 19:55:00', 90000.00),
+    (9, 'debit', '2026-02-07 10:25:00', 58000.60),
+    (10, 'credit', '2026-02-18 16:15:00', 21000.00),
+    (11, 'debit', '2026-03-03 08:35:00', 44000.00),
+    (12, 'credit', '2026-03-16 13:50:00', 16000.00),
+    (13, 'debit', '2026-03-27 21:05:00', 29000.95),
+    (14, 'credit', '2026-04-05 09:00:00', 19000.00),
+    (15, 'debit', '2026-04-19 15:45:00', 72000.80),
+    (1, 'credit', '2026-05-06 11:10:00', 23000.00),
+    (2, 'debit', '2026-05-08 17:25:00', 38000.00);
 
 -- Données: Codes de recharge
 INSERT INTO codes (valeur, gain, is_used) VALUES
