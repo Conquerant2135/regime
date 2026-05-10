@@ -199,4 +199,37 @@ class UsersModel extends Model
 
         return ($imcs[$milieu - 1] + $imcs[$milieu]) / 2;
     }
+
+    public function getObjectifsParMois($annee)
+    {
+        $db = \Config\Database::connect();
+
+        return $db->table('client_objectifs co')
+            ->select('
+            o.libelle AS objectif,
+            MONTH(co.date_choix) AS mois,
+            YEAR(co.date_choix) AS annee,
+            COUNT(*) AS total
+        ')
+            ->join('objectifs o', 'o.id = co.objectif_id')
+            ->join('users u', 'u.id = co.client_id')
+            ->where('u.role !=', 'admin')
+            ->where('YEAR(co.date_choix)', $annee)
+            ->groupBy('o.libelle, MONTH(co.date_choix), YEAR(co.date_choix)')
+            ->orderBy('o.libelle', 'ASC')
+            ->orderBy('mois', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getAnneePresente()
+    {
+        $db = \Config\Database::connect();
+        return $db->table('client_objectifs co')
+                ->select('YEAR(date_choix) AS annee')
+                ->distinct()
+                ->orderBy('annee','DESC')
+                ->get()
+                ->getResultArray();
+    }
 }

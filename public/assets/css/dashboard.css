@@ -257,3 +257,31 @@
     height: 250px;
   }
 }
+
+#annee_repartition {
+    padding: 10px 14px;
+    width: max-content;
+    border-radius: 10px;
+    border: 1px solid rgba(92, 120, 146, 0.25);
+    background: #fff;
+    color: #1f2a37;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+}
+
+#annee_repartition:hover {
+    border-color: rgba(42, 143, 214, 0.6);
+}
+
+#annee_repartition:focus {
+    border-color: #2a8fd6;
+    box-shadow: 0 0 0 3px rgba(42, 143, 214, 0.15);
+}
+
+#annee_repartition option {
+    padding: 8px;
+}

@@ -20,8 +20,6 @@ $routes->get('/inscription/contact', 'AuthController::inscriptionFormContact');
 $routes->post('/inscription/info', 'AuthController::inscriptionFormInfoPerso');
 $routes->post('/inscription', 'AuthController::inscription');
 
-
-
 $routes->get('/test-payement', 'PaiementController::testPayement');
 $routes->post('/acheter_regime_sport', 'PaiementController::acheterRegimeSport');
 $routes->post('/options/souscrire-gold', 'PaiementController::souscrireGold');
@@ -33,7 +31,9 @@ $routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCo
 // Routes Debug (à supprimer après testing)
 $routes->get('/debug_wallet', 'DebugController::wallet');
 $routes->post('/debug_wallet_ajax', 'DebugController::walletAjax');
-$routes->get('/test_ajax', function() { return view('test_ajax'); });
+$routes->get('/test_ajax', function () {
+    return view('test_ajax');
+});
 $routes->get('/debug_objectives', 'DebugController::objectives');
 
 // grouper dans une route de ce style les chemins destinees aux personnes qui
@@ -47,16 +47,21 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboard');
 });
 
-$routes->group('api' , ['filter' => 'admin'], function ($routes) {
-    $routes->get('userInscription', 'UsersController::countUserByInscriptionApi');
+// l'api admin , verouillage par le filtre
+$routes->group('api', ['filter' => 'admin'], function ($routes) {
 
-    $routes->group('userRepartition', function ($routes){
+    $routes->get('userInscription', 'UsersController::countUserByInscriptionApi');
+    $routes->get('userDepenses', 'UsersController::depensesParMoisEtAnneeApi');
+    $routes->get('annee', 'UsersController::getAnneePresente');
+
+    $routes->group('userRepartition', function ($routes) {
         $routes->get('typeCompte', 'UsersController::countUserByAccoutType');
         $routes->get('imc', 'UsersController::getRepartitionClientByIMC');
+        $routes->group('objectif', function ($routes) {
+            $routes->get('(:num)', 'UsersController::getRepatitionObjectifClient/$1');
+        });
     });
-    
-    $routes->get('userDepenses', 'UsersController::depensesParMoisEtAnneeApi');
-    
+
 });
 
 $routes->get('/logout', 'AuthController::logout');

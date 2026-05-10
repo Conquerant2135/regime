@@ -8,28 +8,42 @@ use App\Models\UsersModel;
 
 class UsersController extends BaseController
 {
-    public function countUserByInscriptionApi(){
+    public function countUserByInscriptionApi()
+    {
         $usersModel = new UsersModel();
         $result = $usersModel->countUsersByInscriptionMonth();
         return $this->response->setJSON($result);
     }
 
-    public function countUserByAccoutType(){
+    public function countUserByAccoutType()
+    {
         $usersModel = new UsersModel();
         $result = $usersModel->countUsersByAccountType();
         return $this->response->setJSON($result);
     }
 
-    public function depensesParMoisEtAnneeApi(){
+    public function depensesParMoisEtAnneeApi()
+    {
         $usersModel = new UsersModel();
         $result = $usersModel->getDepensesByMonthAndYear();
 
         return $this->response->setJSON($result);
     }
 
-    public function getRepartitionClientByIMC(){
+    public function getRepartitionClientByIMC()
+    {
         $usersModel = new UsersModel();
         $result = $usersModel->getRepartitionClientByIMC();
         return $this->response->setJSON($result);
+    }
+
+    public function getRepatitionObjectifClient($annee) {
+        $usersModel = new UsersModel();
+        return  $this->response->setJSON($usersModel->getObjectifsParMois($annee));
+    }
+
+    public function getAnneePresente(){
+        $usersModel = new UsersModel();
+        return $this->response->setJSON($usersModel->getAnneePresente());
     }
 }
