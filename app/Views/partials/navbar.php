@@ -53,7 +53,7 @@
         <h1>💪 Fitness Régime</h1>
         <div class="navbar-right">
             <a href="/portefeuille" class="btn-solde">
-                💰 Solde: <?= number_format(session()->get('solde', 0), 2) ?> €
+                💰 Solde: <?= number_format(session()->get('solde') ?? 0, 2) ?> €
             </a>
             <div class="navbar-links">
                 <a href="/home">Accueil</a>
