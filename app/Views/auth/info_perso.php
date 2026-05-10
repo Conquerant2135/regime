@@ -12,7 +12,7 @@
 </head>
 
 <body>
-
+    <?php $validation = $validation ?? session()->getFlashdata('validation'); ?>
     <main>
         <section class="login">
             <div class="container">

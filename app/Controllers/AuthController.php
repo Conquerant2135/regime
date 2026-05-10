@@ -120,8 +120,10 @@ class AuthController extends BaseController
         // je pense faire une validation a chaque changement de page est mieux
         // c'est ici qu'on va faire la validation depuis le premieer formulaire
 
-        if ( ! $this->validate($this->wizardFistPageValidationRules())) {
-            return view('auth/contact', ['validation' => $this->validator]);
+        if (! $this->validate($this->wizardFistPageValidationRules())) {
+            return redirect()->to('/inscription/contact')
+                ->withInput()
+                ->with('validation', $this->validator);
         }
 
         $nom = $this->request->getPost('nom');
@@ -143,8 +145,10 @@ class AuthController extends BaseController
 
     public function inscription()
     {
-        if ( ! $this->validate($this->wizardSecondPageValidationRules())) {
-            return view('auth/info_perso', ['validation' => $this->validator]);
+        if (! $this->validate($this->wizardSecondPageValidationRules())) {
+            return redirect()->back()
+                ->withInput()
+                ->with('validation', $this->validator);
         }
 
         $userData = session()->get('wizard_step_1');
