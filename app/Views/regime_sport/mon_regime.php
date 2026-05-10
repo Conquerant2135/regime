@@ -10,6 +10,11 @@
             <p>
                 Retrouvez ici les combinaisons régime + sport déjà achetées dans votre compte.
             </p>
+            <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <a class="btn btn-primary" href="<?= site_url('mon-regime/pdf') ?>" target="_blank" rel="noopener">
+                    Exporter en PDF
+                </a>
+            </div>
         </div>
 
         <div class="regime-hero-stats">
@@ -82,7 +87,8 @@
                         <td data-label="Objectif"><?= esc($purchase['objectif_libelle'] ?? '—') ?></td>
                         <td data-label="Durée"><?= esc((string) $duree) ?> jours</td>
                         <td data-label="Prix / jour"><?= esc(number_format($prixParJour, 2, '.', '')) ?> €</td>
-                        <td data-label="Impact"><?= $impact === null ? '—' : esc(number_format((float) $impact, 3, '.', '')) ?> kg</td>
+                        <td data-label="Impact"><?= $impact === null ? '—' : esc(number_format((float) $impact, 3, '.', '')) ?>
+                            kg</td>
                         <td data-label="Coût estimé">
                             <?= $coutEstime === null ? '—' : esc(number_format((float) $coutEstime, 2, '.', '')) . ' €' ?>
                         </td>

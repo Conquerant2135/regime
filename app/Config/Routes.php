@@ -32,6 +32,7 @@ $routes->get('/logout', 'AuthController::logout');
 
 $routes->post('/regime-sport/set-objectif', 'RegimeSportController::setObjectif', ['filter' => 'auth']);
 $routes->get('/mon-regime', 'RegimeSportController::monRegime', ['filter' => 'auth']);
+$routes->get('/mon-regime/pdf', 'RegimeSportController::exportMonRegimePdf', ['filter' => 'auth']);
 $routes->get('/mon-compte', 'PortefeuilleController::compte', ['filter' => 'auth']);
 $routes->get('/portefeuille', 'PortefeuilleController::index', ['filter' => 'auth']);
 $routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCode');

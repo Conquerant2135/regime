@@ -196,7 +196,7 @@ class RegimeSportController extends BaseController
         // Récupère tous les objectifs pour la sélection si l'utilisateur n'en a pas
         $allObjectives = $this->objectifsModel->findAll();
         $showObjectiveSelector = false;
-        
+
         // Affiche le sélecteur d'objectif si : pas connecté OU connecté sans objectif
         if (!$selectedUserId || ($selectedUserId && empty($userObjectif))) {
             $showObjectiveSelector = true;
@@ -296,6 +296,127 @@ class RegimeSportController extends BaseController
         ];
 
         return view('regime_sport/mon_regime', $data);
+    }
+
+    private function pdfText(string $value): string
+    {
+        $converted = @iconv('UTF-8', 'windows-1252//TRANSLIT', $value);
+
+        return $converted !== false ? $converted : utf8_decode($value);
+    }
+
+    private function limitPdfText(string $value, int $maxLength): string
+    {
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            return mb_strlen($value) > $maxLength
+                ? mb_substr($value, 0, $maxLength - 1) . '…'
+                : $value;
+        }
+
+        return strlen($value) > $maxLength ? substr($value, 0, $maxLength - 1) . '…' : $value;
+    }
+
+    public function exportMonRegimePdf()
+    {
+        $clientId = (int) session()->get('user_id');
+
+        if (!session()->get('logged_in') || $clientId <= 0) {
+            return redirect()->to('/login')->with('error', 'Authentification requise');
+        }
+
+        $selectedUser = $this->usersModel->find($clientId);
+        $purchasedRegimes = $this->purchaseModel->getPurchasedDetailsByClient($clientId);
+
+        $totalPackages = count($purchasedRegimes);
+        $totalDays = 0;
+        $estimatedTotal = 0.0;
+
+        foreach ($purchasedRegimes as $purchase) {
+            $duree = (int) ($purchase['duree'] ?? 0);
+            $prixParJour = (float) ($purchase['prix_par_jour'] ?? 0);
+            $totalDays += $duree;
+            $estimatedTotal += $prixParJour * $duree;
+        }
+
+        require_once ROOTPATH . 'fpdf186/fpdf.php';
+
+        $pdf = new \FPDF('P', 'mm', 'A4');
+        $pdf->SetAutoPageBreak(true, 15);
+        $pdf->AddPage();
+        $pdf->SetMargins(12, 12, 12);
+        $pdf->SetTitle($this->pdfText('Mon régime'));
+
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(0, 10, $this->pdfText('Fitness Régime - Mon régime'), 0, 1, 'C');
+        $pdf->Ln(2);
+
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->Cell(0, 7, $this->pdfText('Utilisateur : ' . ($selectedUser['email'] ?? $selectedUser['nom'] ?? '—')), 0, 1);
+        $pdf->Cell(0, 7, $this->pdfText('Packages achetés : ' . $totalPackages), 0, 1);
+        $pdf->Cell(0, 7, $this->pdfText('Jours cumulés : ' . $totalDays), 0, 1);
+        $pdf->Cell(0, 7, $this->pdfText('Coût estimé : ' . number_format($estimatedTotal, 2, ',', ' ') . ' €'), 0, 1);
+        $pdf->Ln(4);
+
+        $headers = ['Date', 'Régime', 'Sport', 'Objectif', 'Durée', 'Prix/jour', 'Impact', 'Coût estimé'];
+        $widths = [32, 34, 30, 24, 16, 22, 18, 24];
+
+        $pdf->SetFont('Arial', 'B', 8);
+        foreach ($headers as $index => $header) {
+            $pdf->Cell($widths[$index], 8, $this->pdfText($header), 1, 0, 'C');
+        }
+        $pdf->Ln();
+
+        $pdf->SetFont('Arial', '', 8);
+
+        if (empty($purchasedRegimes)) {
+            $pdf->Cell(array_sum($widths), 10, $this->pdfText('Aucun régime acheté pour le moment.'), 1, 1, 'C');
+        } else {
+            foreach ($purchasedRegimes as $purchase) {
+                $pourcentageViande = (float) ($purchase['pourcentage_viande'] ?? 0);
+                $pourcentageVolaille = (float) ($purchase['pourcentage_volaille'] ?? 0);
+                $pourcentagePoisson = (float) ($purchase['pourcentage_poisson'] ?? 0);
+                $prixParJour = (float) ($purchase['prix_par_jour'] ?? 0);
+                $duree = (int) ($purchase['duree'] ?? 0);
+                $impact = $purchase['impact_journalier'] ?? null;
+                $coutEstime = $prixParJour > 0 && $duree > 0 ? $prixParJour * $duree : null;
+                $regimeLabel = trim(
+                    number_format($pourcentageViande, 0) . '% viande, ' .
+                    number_format($pourcentageVolaille, 0) . '% volaille, ' .
+                    number_format($pourcentagePoisson, 0) . '% poisson'
+                );
+
+                $row = [
+                    (string) ($purchase['date_choix'] ?? '—'),
+                    $regimeLabel ?: '—',
+                    (string) ($purchase['sport_libelle'] ?? '—'),
+                    (string) ($purchase['objectif_libelle'] ?? '—'),
+                    $duree . ' j',
+                    number_format($prixParJour, 2, ',', ' ') . ' €',
+                    $impact === null ? '—' : number_format((float) $impact, 3, ',', ' ') . ' kg',
+                    $coutEstime === null ? '—' : number_format((float) $coutEstime, 2, ',', ' ') . ' €',
+                ];
+
+                if ($pdf->GetY() > 275) {
+                    $pdf->AddPage();
+                    $pdf->SetFont('Arial', 'B', 8);
+                    foreach ($headers as $index => $header) {
+                        $pdf->Cell($widths[$index], 8, $this->pdfText($header), 1, 0, 'C');
+                    }
+                    $pdf->Ln();
+                    $pdf->SetFont('Arial', '', 8);
+                }
+
+                foreach ($row as $index => $cell) {
+                    $display = $this->limitPdfText($cell, max(8, (int) ($widths[$index] / 2)));
+                    $pdf->Cell($widths[$index], 8, $this->pdfText($display), 1, 0, 'L');
+                }
+                $pdf->Ln();
+            }
+        }
+
+        $filename = 'mon_regime_' . date('Y-m-d_H-i-s') . '.pdf';
+        $pdf->Output('D', $filename);
+        exit;
     }
 }
 
