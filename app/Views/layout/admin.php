@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
+
 <body class="site-body">
 
     <header class="site-header">
@@ -26,6 +28,9 @@
             <a class="wallet-pill" href="<?= site_url('portefeuille') ?>">
                 Solde: <?= number_format((float) (session()->get('solde') ?? 0), 2) ?> €
             </a>
+            <?php if (session()->get('logged_in')): ?>
+                <a class="logout-btn" href="<?= site_url('logout') ?>" title="Déconnexion">Déconnexion</a>
+            <?php endif; ?>
         </div>
     </header>
 
@@ -35,15 +40,18 @@
         <aside class="dashboard-sidebar">
             <span class="sidebar-title">⚙️ Gestion</span>
             <nav class="sidebar-menu" aria-label="Menu gestion admin">
-                <a href="<?= site_url('/admin/dashboard') ?>" class="sidebar-link <?= url_is('admin/dashboard') ? 'active' : '' ?>">
+                <a href="<?= site_url('/admin/dashboard') ?>"
+                    class="sidebar-link <?= url_is('admin/dashboard') ? 'active' : '' ?>">
                     <span class="sidebar-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="<?= site_url('/admin/regimes') ?>" class="sidebar-link <?= url_is('admin/regimes*') ? 'active' : '' ?>">
+                <a href="<?= site_url('/admin/regimes') ?>"
+                    class="sidebar-link <?= url_is('admin/regimes*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🥗</span>
                     <span>CRUD Régimes</span>
                 </a>
-                <a href="<?= site_url('/admin/sports') ?>" class="sidebar-link <?= url_is('admin/sports*') ? 'active' : '' ?>">
+                <a href="<?= site_url('/admin/sports') ?>"
+                    class="sidebar-link <?= url_is('admin/sports*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🏃‍♂️</span>
                     <span>CRUD Sports</span>
                 </a>
@@ -51,9 +59,10 @@
 
             <span class="sidebar-title" style="margin-top: 28px;">⚙️ Paramètres</span>
             <nav class="sidebar-menu" aria-label="Menu parametres admin">
-                <a href="#" class="sidebar-link">
+                <a href="<?= site_url('/admin/options') ?>"
+                    class="sidebar-link <?= url_is('admin/options*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🔧</span>
-                    <span>CRUD configuration</span>
+                    <span>CRUD options</span>
                 </a>
             </nav>
         </aside>
@@ -65,4 +74,5 @@
     </div>
 
 </body>
+
 </html>

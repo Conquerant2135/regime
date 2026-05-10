@@ -32,6 +32,7 @@ $routes->get('/logout', 'AuthController::logout');
 
 $routes->post('/regime-sport/set-objectif', 'RegimeSportController::setObjectif', ['filter' => 'auth']);
 $routes->get('/mon-regime', 'RegimeSportController::monRegime', ['filter' => 'auth']);
+$routes->get('/mon-regime/pdf', 'RegimeSportController::exportMonRegimePdf', ['filter' => 'auth']);
 $routes->get('/mon-compte', 'PortefeuilleController::compte', ['filter' => 'auth']);
 $routes->get('/portefeuille', 'PortefeuilleController::index', ['filter' => 'auth']);
 $routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCode');
@@ -62,6 +63,10 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('sports/update/(:num)', 'AdminController::editSport/$1');
     $routes->post('sports/update/(:num)', 'AdminController::updateSport/$1');
     $routes->post('sports/delete/(:num)', 'AdminController::deleteSport/$1');
+    $routes->get('options', 'AdminController::options');
+    $routes->post('options', 'AdminController::storeOption');
+    $routes->post('options/update/(:num)', 'AdminController::updateOption/$1');
+    $routes->post('options/delete/(:num)', 'AdminController::deleteOption/$1');
 });
 
 // -----------------------------------------------------------------------------
