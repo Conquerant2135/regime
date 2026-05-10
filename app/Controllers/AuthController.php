@@ -86,6 +86,9 @@ class AuthController extends BaseController
             $intendedRedirect = $this->getIntendedRedirect();
             $defaultRedirect = $this->getDefaultPostLoginRedirect((string) $user['role']);
             
+            // Regenerate session id to prevent session fixation attacks
+            session()->regenerate();
+
             session()->set([
                 'user_id' => $user['id'],
                 'userEmail' => $user['email'],
