@@ -16,7 +16,7 @@ Dashboard Admin - Fitness Régime
 <div class="stats-grid">
     <div class="stat-card">
         <span class="stat-label">Utilisateurs Totaux</span>
-        <span class="stat-value">1,234</span>
+        <span class="stat-value"><?= $totalClient ?></span>
         <span class="stat-change positive">↑ 12% ce mois</span>
     </div>
     <div class="stat-card">
@@ -26,13 +26,8 @@ Dashboard Admin - Fitness Régime
     </div>
     <div class="stat-card">
         <span class="stat-label">Revenus Totaux</span>
-        <span class="stat-value">€12,450</span>
+        <span class="stat-value">Ar <?= $totalCA ?></span>
         <span class="stat-change positive">↑ 5% ce mois</span>
-    </div>
-    <div class="stat-card">
-        <span class="stat-label">Taux de Satisfaction</span>
-        <span class="stat-value">94%</span>
-        <span class="stat-change negative">↓ 2% ce mois</span>
     </div>
 </div>
 

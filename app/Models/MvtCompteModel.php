@@ -60,4 +60,14 @@ class MvtCompteModel extends Model
 
         return $credits - $debits;
     }
+
+    public function getSoldePlateforme()
+    {
+        $montant = $this
+            ->selectSum('montant')
+            ->where('type_transaction' , 'credit')
+            ->first();
+
+        return $montant['montant'];
+    }
 }

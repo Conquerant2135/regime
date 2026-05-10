@@ -159,4 +159,15 @@ class UsersModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    public function getNombreTotalClients(){
+        $total = $this->builder()
+        ->select('COUNT(*) as total')
+        ->where('role !=','admin')
+        ->get()
+        ->getResultArray();
+
+        return $total[0]['total'];
+    }
+
 }
