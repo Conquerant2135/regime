@@ -48,7 +48,7 @@ class AuthController extends BaseController
 
     private function wizardSecondPageValidationRules()
     {
-        return ['taille' => 'required|greater_than[0]|numeric' , 'poid' => 'required|greater_than[0]|numeric'];
+        return ['taille' => 'required|greater_than[0]|numeric', 'poid' => 'required|greater_than[0]|numeric'];
     }
 
     public function loginForm()
@@ -76,7 +76,7 @@ class AuthController extends BaseController
         $user = $usersModel->getByEmail($email);
 
         if (!$user) {
-            return view('auth/login' , ['notFound' => 'Utilisateur/adresse mail introuvable'] );
+            return view('auth/login', ['notFound' => 'Utilisateur/adresse mail introuvable']);
         }
 
         if ($user['mot_de_passe'] === $password) {
@@ -85,7 +85,7 @@ class AuthController extends BaseController
 
             $intendedRedirect = $this->getIntendedRedirect();
             $defaultRedirect = $this->getDefaultPostLoginRedirect((string) $user['role']);
-            
+
             // evite les attaques de session fixation
             session()->regenerate();
 
@@ -104,12 +104,15 @@ class AuthController extends BaseController
             return redirect()->to($intendedRedirect ?? $defaultRedirect)
                 ->with('success', 'Connexion réussie.');
         } else {
-            return view('auth/login', [ 'wrong' => 'Mot de passe incorrect']);
+            return view('auth/login', ['wrong' => 'Mot de passe incorrect']);
         }
     }
 
     public function inscriptionFormContact()
     {
+        // Clear any stale wizard session if starting fresh
+        session()->remove('wizard_step_1');
+
         // affiche juste le premier formlaire
         return view('auth/contact');
     }
@@ -123,7 +126,7 @@ class AuthController extends BaseController
         // je pense faire une validation a chaque changement de page est mieux
         // c'est ici qu'on va faire la validation depuis le premieer formulaire
 
-        if (! $this->validate($this->wizardFistPageValidationRules())) {
+        if (!$this->validate($this->wizardFistPageValidationRules())) {
             return redirect()->to('/inscription/contact')
                 ->withInput()
                 ->with('validation', $this->validator);
@@ -140,29 +143,62 @@ class AuthController extends BaseController
             'email' => $email,
             'mot_de_passe' => $password,
             'date_naissance' => $naissance,
-            'sexe' => $sexe
+            'sexe' => $sexe,
+            'wizard_step_1_timestamp' => time()
         ];
         session()->set('wizard_step_1', $data);
         return view('auth/info_perso');
     }
 
-    public function inscription()
+    public function showInscriptionForm()
     {
-        if (! $this->validate($this->wizardSecondPageValidationRules())) {
-            return redirect()->back()
-                ->withInput()
-                ->with('validation', $this->validator);
+        // Vérifier que l'utilisateur vient du step 1
+        $userData = session()->get('wizard_step_1');
+        if (!is_array($userData) || empty($userData)) {
+            return redirect()->to('/inscription/contact')
+                ->with('error', 'Veuillez d\'abord remplir le formulaire de contact.');
         }
 
+        return view('auth/info_perso');
+    }
+
+    public function inscription()
+    {
+        if (!$this->validate($this->wizardSecondPageValidationRules())) {
+            return view('auth/info_perso', ['validation' => $this->validator]);
+        }
+
+        // Vérifier que le step 1 existe et n'est pas expiré (30 min max)
         $userData = session()->get('wizard_step_1');
-        session()->remove('wizard_step_1');
+        if (!is_array($userData) || empty($userData)) {
+            return redirect()->to('/inscription/contact')
+                ->with('error', 'Session d\'inscription expirée. Veuillez recommencer.');
+        }
+
+        $stepTimestamp = $userData['wizard_step_1_timestamp'] ?? null;
+        if (!$stepTimestamp || (time() - $stepTimestamp) > 1800) {
+            session()->remove('wizard_step_1');
+            return redirect()->to('/inscription/contact')
+                ->with('error', 'Votre session d\'inscription a expiré. Veuillez recommencer.');
+        }
+
         $userData['taille'] = $this->request->getPost('taille');
         $userData['poids'] = $this->request->getPost('poid');
+        // Remove timestamp before saving to DB (it's only for session validation)
+        unset($userData['wizard_step_1_timestamp']);
+
         // on fait la validation du 2eme formulaire , si tout est ok on va
         // inscrire la personne
         $usersModel = new UsersModel();
-        $usersModel->save($userData);
-        return view('auth/login');
+        try {
+            $usersModel->save($userData);
+            // Supprimer la session seulement APRÈS une inscription réussie
+            session()->remove('wizard_step_1');
+            return redirect()->to('/login')->with('success', 'Inscription réussie! Vous pouvez vous connecter.');
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur inscription: ' . $e->getMessage());
+            return view('auth/info_perso', ['validation' => $this->validator, 'error' => $e->getMessage()]);
+        }
     }
 
     public function testFilters()

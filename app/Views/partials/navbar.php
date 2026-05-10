@@ -6,20 +6,23 @@
         padding: 15px 30px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         margin-bottom: 30px;
     }
+
     .navbar h1 {
         margin: 0;
         font-size: 24px;
     }
+
     .navbar-right {
         display: flex;
         align-items: center;
         gap: 20px;
     }
+
     .btn-solde {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.2);
         color: white;
         border: 2px solid white;
         padding: 8px 20px;
@@ -30,19 +33,23 @@
         text-decoration: none;
         display: inline-block;
     }
+
     .btn-solde:hover {
         background: white;
         color: #667eea;
     }
+
     .navbar-links {
         display: flex;
         gap: 20px;
     }
+
     .navbar-links a {
         color: white;
         text-decoration: none;
         transition: all 0.3s ease;
     }
+
     .navbar-links a:hover {
         text-decoration: underline;
     }
