@@ -260,7 +260,6 @@
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
                                     <input type="hidden" name="duree" value="<?= esc((string)($duree ?? '')) ?>">
-                                    <input type="hidden" name="prix" value="<?= esc((string)($cout_total ?? '')) ?>">
                                     <input type="hidden" name="mode_achat" value="normal">
                                     <button type="submit" class="btn btn-primary" <?= (!$regime_id || !$sport_id) ? 'disabled' : '' ?>>
                                         Acheter avec Gold
@@ -276,7 +275,6 @@
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
                                     <input type="hidden" name="duree" value="<?= esc((string)($duree ?? '')) ?>">
-                                    <input type="hidden" name="prix" value="<?= esc((string)($cout_total_original ?? $cout_total ?? '')) ?>">
                                     <input type="hidden" name="mode_achat" value="normal">
                                     <button type="submit" class="btn btn-primary" <?= (!$regime_id || !$sport_id) ? 'disabled' : '' ?>>
                                         Acheter au prix normal
@@ -292,7 +290,6 @@
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
                                     <input type="hidden" name="duree" value="<?= esc((string)($duree ?? '')) ?>">
-                                    <input type="hidden" name="prix" value="<?= esc((string)(isset($cout_total_gold) ? ((float)$goldOptionPrice + (float)$cout_total_gold) : '')) ?>">
                                     <input type="hidden" name="mode_achat" value="gold">
                                     <button type="submit" class="btn btn-ghost" disabled title="Abonnez-vous à Gold en haut de la page pour activer cette option">
                                         Acheter avec Gold (nécessite Gold)

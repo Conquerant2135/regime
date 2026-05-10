@@ -33,7 +33,6 @@ $duree_regime_sport = 30;
 
     <p>Regime ID: <?php echo $regime_id; ?></p>
     <p>Sport ID: <?php echo $sport_id; ?></p>
-    <p>Prix: <?php echo $prix_regime_sport; ?></p>
     <p>Durée: <?php echo $duree_regime_sport; ?></p>
     <form method="post" action="/acheter_regime_sport">
         <?= csrf_field() ?>
@@ -41,7 +40,6 @@ $duree_regime_sport = 30;
         <input type="hidden" name="sport_id" value="<?php echo $sport_id; ?>">
         <input type="hidden" name="objectif_id" value="1">
         <input type="hidden" name="duree" value="<?php echo $duree_regime_sport; ?>">
-        <input type="hidden" name="prix" value="<?php echo $prix_regime_sport; ?>">
         <input type="submit" value="Procéder au paiement">
     </form>
 </body>

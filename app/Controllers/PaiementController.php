@@ -6,6 +6,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Config\Database;
 use App\Models\ClientOptionsModel;
 use App\Models\OptionModel;
+use App\Models\RegimesModel;
 use App\Models\UsersModel;
 use App\Models\PurchaseModel;
 use App\Models\MvtCompteModel;
@@ -17,6 +18,7 @@ class PaiementController extends BaseController
     private MvtCompteModel $mvtModel;
     private ClientOptionsModel $clientOptionsModel;
     private OptionModel $optionModel;
+    private RegimesModel $regimesModel;
 
     public function __construct()
     {
@@ -25,6 +27,7 @@ class PaiementController extends BaseController
         $this->mvtModel = new MvtCompteModel();
         $this->clientOptionsModel = new ClientOptionsModel();
         $this->optionModel = new OptionModel();
+        $this->regimesModel = new RegimesModel();
     }
 
     private function getPricingContext(float $prixOriginal, bool $withGold): array
@@ -41,6 +44,17 @@ class PaiementController extends BaseController
         ];
     }
 
+    private function calculateRegimePrice(int $regimeId, int $duree): ?float
+    {
+        $regime = $this->regimesModel->getRegimeWithDetails($regimeId);
+
+        if (!$regime || $duree <= 0) {
+            return null;
+        }
+
+        return round(((float) $regime->prix_par_jour) * $duree, 2);
+    }
+
     public function acheterRegimeSport(): ResponseInterface
     {
         $clientId = (int)session()->get('user_id') ?? 0;
@@ -53,7 +67,6 @@ class PaiementController extends BaseController
             'sport_id' => 'required|integer|greater_than[0]',
             'objectif_id' => 'required|integer|greater_than[0]',
             'duree' => 'required|integer|greater_than[0]',
-            'prix' => 'required|numeric|greater_than[0]',
             'mode_achat' => 'required|in_list[normal,gold]'
         ])) {
             return redirect()->back()
@@ -65,17 +78,32 @@ class PaiementController extends BaseController
         $sportId = (int)$this->request->getPost('sport_id');
         $objectifId = (int)$this->request->getPost('objectif_id');
         $duree = (int)$this->request->getPost('duree');
-        $prix = (float)$this->request->getPost('prix');
         $modeAchat = (string) $this->request->getPost('mode_achat');
+
+        $basePrice = $this->calculateRegimePrice($regimeId, $duree);
+        if ($basePrice === null) {
+            return redirect()->back()->with('error', 'Régime introuvable ou durée invalide.');
+        }
+
+        $db = Database::connect();
+
+        $combinaisonExiste = $db->table('regime_sports')
+            ->where('regime_id', $regimeId)
+            ->where('sport_id', $sportId)
+            ->countAllResults() > 0;
+
+        if (!$combinaisonExiste) {
+            return redirect()->back()->with('error', 'La combinaison régime/sport est invalide.');
+        }
 
         $goldOption = $this->optionModel->getGoldOption();
         $goldRemise = $this->optionModel->getGoldRemise();
         $goldOptionPrice = $this->optionModel->getGoldPrixOption();
         $hasGold = $this->clientOptionsModel->hasGoldOption($clientId);
 
-        $pricing = $this->getPricingContext($prix, $modeAchat === 'gold');
+        $pricing = $this->getPricingContext($basePrice, $modeAchat === 'gold');
         $prixRegimeGold = $pricing['prix_regime_gold'];
-        $prixRegimeAchat = $modeAchat === 'gold' || $hasGold ? $prixRegimeGold : $prix;
+        $prixRegimeAchat = $modeAchat === 'gold' || $hasGold ? $prixRegimeGold : $basePrice;
         $totalADelever = $modeAchat === 'gold' && !$hasGold ? $pricing['prix_total'] : $prixRegimeAchat;
 
         $soldeClient = $this->mvtModel->getSoldeClient($clientId);
@@ -85,8 +113,6 @@ class PaiementController extends BaseController
                 "Solde insuffisant. Vous avez " . number_format($soldeClient, 2) . "€ mais il en faut " . number_format($totalADelever, 2) . "€. Montant manquant: " . number_format($montantManquant, 2) . "€"
             );
         }
-
-        $db = Database::connect();
 
         try {
             $db->transStart();
