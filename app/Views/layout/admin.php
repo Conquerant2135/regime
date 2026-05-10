@@ -17,7 +17,7 @@
                 <span class="brand-mark">FR</span>
                 <span class="brand-text">Fitness Régime</span>
             </a>
-            <nav class="site-links">
+            <nav class="site-links" aria-label="Navigation principale">
                 <a href="<?= site_url('/') ?>">Accueil</a>
                 <a href="<?= site_url('regime-sport') ?>">Régimes</a>
                 <a href="<?= site_url('mon-compte') ?>">Mon compte</a>
@@ -34,12 +34,12 @@
         <!-- SIDEBAR -->
         <aside class="dashboard-sidebar">
             <span class="sidebar-title">⚙️ Gestion</span>
-            <nav class="sidebar-menu">
-                <a href="<?= site_url('/admin/dashboard') ?>" class="sidebar-link active">
+            <nav class="sidebar-menu" aria-label="Menu gestion admin">
+                <a href="<?= site_url('/admin/dashboard') ?>" class="sidebar-link <?= url_is('admin/dashboard') ? 'active' : '' ?>">
                     <span class="sidebar-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="" class="sidebar-link">
+                <a href="<?= site_url('/admin/regimes') ?>" class="sidebar-link <?= url_is('admin/regimes*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🥗</span>
                     <span>CRUD Régimes</span>
                 </a>
@@ -50,7 +50,7 @@
             </nav>
 
             <span class="sidebar-title" style="margin-top: 28px;">⚙️ Paramètres</span>
-            <nav class="sidebar-menu">
+            <nav class="sidebar-menu" aria-label="Menu parametres admin">
                 <a href="#" class="sidebar-link">
                     <span class="sidebar-icon">🔧</span>
                     <span>CRUD configuration</span>

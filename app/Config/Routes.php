@@ -45,6 +45,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 // groupe de route accessible uniquement pour ceux qui on un role d'admin
 $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboard');
+    $routes->get('regimes', 'AdminController::regimes');
+    $routes->post('regimes', 'AdminController::storeRegime');
+    $routes->get('regimes/update/(:num)', 'AdminController::editRegime/$1');
+    $routes->post('regimes/update/(:num)', 'AdminController::updateRegime/$1');
+    $routes->post('regimes/delete/(:num)', 'AdminController::deleteRegime/$1');
 });
 
 // l'api admin , verouillage par le filtre
