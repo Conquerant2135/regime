@@ -42,6 +42,8 @@ $routes->post('/portefeuille/utiliser-code', 'PortefeuilleController::utiliserCo
 
 $routes->get('/test-payement', 'PaiementController::testPayement');
 $routes->post('/acheter_regime_sport', 'PaiementController::acheterRegimeSport');
+// $routes->get('/acheter_regime_sport', 'PaiementController::acheterRegimeSport');
+
 $routes->post('/options/souscrire-gold', 'PaiementController::souscrireGold');
 
 // -----------------------------------------------------------------------------

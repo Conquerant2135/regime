@@ -100,6 +100,22 @@ class PurchaseModel extends Model
     }
 
     /**
+     * Vérifie si le client a déjà acheté exactement ce couple aujourd'hui.
+     */
+    public function findExistingPurchase(int $clientId, int $regimeId, int $sportId, int $objectifId, string $dateChoix): ?array
+    {
+        $purchase = $this->where([
+            'client_id' => $clientId,
+            'regime_id' => $regimeId,
+            'sport_id' => $sportId,
+            'objectif_id' => $objectifId,
+            'date_choix' => $dateChoix,
+        ])->first();
+
+        return $purchase ?: null;
+    }
+
+    /**
      * Crée un achat en réutilisant une connexion existante déjà dans une transaction.
      * 
      * ⚠️ IMPORTANT: Ce method N'INSÈRE que l'achat (regime_sports)

@@ -48,10 +48,10 @@ class MvtCompteModel extends Model
             'type_transaction' => $type,
             'date_mouvement' => date('Y-m-d H:i:s'),
             'montant' => $montant,
-            'mouvement_type' => $mouvementType ?? 'autre',
-            'regime_id' => $regimeId,
-            'sport_id' => $sportId,
-            'description' => $description
+            // 'type_transaction' => $mouvementType ?? 'autre'
+            // 'regime_id' => $regimeId,
+            // 'sport_id' => $sportId,
+            // 'description' => $description
         ]);
     }
 

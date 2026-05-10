@@ -28,6 +28,54 @@
         </div>
     </section>
 
+    <?php
+        $flashError = session()->getFlashdata('purchase_error');
+        $flashSuccess = session()->getFlashdata('purchase_success');
+        $infoMessage = session()->getFlashdata('success');
+        $genericError = session()->getFlashdata('error');
+    ?>
+
+    <?php if (!empty($infoMessage) && empty($flashError) && empty($flashSuccess)): ?>
+        <div class="flash flash-success show" style="margin: 1rem 0;">
+            <strong>✅ Info :</strong> <?= esc($infoMessage) ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($genericError) && empty($flashError) && empty($flashSuccess)): ?>
+        <div class="flash flash-error show" style="margin: 1rem 0;">
+            <strong>❌ Erreur :</strong> <?= esc($genericError) ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($flashError) || !empty($flashSuccess)): ?>
+        <div class="purchase-alert-overlay" id="purchaseAlertOverlay" role="dialog" aria-modal="true" aria-live="assertive">
+            <div class="purchase-alert-card <?= !empty($flashError) ? 'is-error' : 'is-success' ?>">
+                <div class="purchase-alert-badge">
+                    <?= !empty($flashError) ? 'Erreur achat' : 'Achat confirmé' ?>
+                </div>
+                <h2><?= !empty($flashError) ? 'Le paiement a échoué' : 'Le paiement a réussi' ?></h2>
+                <p><?= esc($flashError ?: $flashSuccess) ?></p>
+                <button type="button" class="purchase-alert-button" id="purchaseAlertClose">
+                    J’ai compris
+                </button>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const overlay = document.getElementById('purchaseAlertOverlay');
+                const closeButton = document.getElementById('purchaseAlertClose');
+
+                if (!overlay || !closeButton) {
+                    return;
+                }
+
+                closeButton.addEventListener('click', function () {
+                    overlay.remove();
+                });
+            });
+        </script>
+    <?php endif; ?>
+
     <!-- Affiche l'objectif de l'utilisateur de session -->
     <?php if ($selectedUser && $userObjectif): ?>
         <p class="objectif-info">
@@ -168,18 +216,6 @@
     </section>
 
 
-    <?php if (session()->has('error')): ?>
-        <div class="flash flash-error">
-            <strong>❌ Erreur :</strong> <?= session()->getFlashdata('error') ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (session()->has('success')): ?>
-        <div class="flash flash-success">
-            <strong>✅ Succès :</strong> <?= session()->getFlashdata('success') ?>
-        </div>
-    <?php endif; ?>
-
     <!-- Liste des couples régime-sport -->
     <?php if (!empty($regimesSports)): ?>
         <table class="table regime-table">
@@ -260,7 +296,7 @@
                                     <input type="hidden" name="sport_id" value="<?= esc((string)($sport_id ?? '')) ?>">
                                     <input type="hidden" name="objectif_id" value="<?= esc((string)($objectif_id ?? session()->get('user_id') ?? '')) ?>">
                                     <input type="hidden" name="duree" value="<?= esc((string)($duree ?? '')) ?>">
-                                    <input type="hidden" name="mode_achat" value="normal">
+                                    <input type="hidden" name="mode_achat" value="gold">
                                     <button type="submit" class="btn btn-primary" <?= (!$regime_id || !$sport_id) ? 'disabled' : '' ?>>
                                         Acheter avec Gold
                                         <?php if ($cout_total !== null): ?>
