@@ -57,27 +57,29 @@ class PaiementController extends BaseController
 
     public function acheterRegimeSport(): ResponseInterface
     {
-        $clientId = (int)session()->get('user_id') ?? 0;
+        $clientId = (int) session()->get('user_id') ?? 0;
         if (!session()->get('logged_in') || $clientId <= 0) {
             return redirect()->to('/login')->with('error', 'Authentification requise');
         }
 
-        if (!$this->validate([
-            'regime_id' => 'required|integer|greater_than[0]',
-            'sport_id' => 'required|integer|greater_than[0]',
-            'objectif_id' => 'required|integer|greater_than[0]',
-            'duree' => 'required|integer|greater_than[0]',
-            'mode_achat' => 'required|in_list[normal,gold]'
-        ])) {
+        if (
+            !$this->validate([
+                'regime_id' => 'required|integer|greater_than[0]',
+                'sport_id' => 'required|integer|greater_than[0]',
+                'objectif_id' => 'required|integer|greater_than[0]',
+                'duree' => 'required|integer|greater_than[0]',
+                'mode_achat' => 'required|in_list[normal,gold]'
+            ])
+        ) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Données invalides: ' . implode(', ', $this->validator->getErrors()));
         }
 
-        $regimeId = (int)$this->request->getPost('regime_id');
-        $sportId = (int)$this->request->getPost('sport_id');
-        $objectifId = (int)$this->request->getPost('objectif_id');
-        $duree = (int)$this->request->getPost('duree');
+        $regimeId = (int) $this->request->getPost('regime_id');
+        $sportId = (int) $this->request->getPost('sport_id');
+        $objectifId = (int) $this->request->getPost('objectif_id');
+        $duree = (int) $this->request->getPost('duree');
         $modeAchat = (string) $this->request->getPost('mode_achat');
 
         $basePrice = $this->calculateRegimePrice($regimeId, $duree);
@@ -109,7 +111,8 @@ class PaiementController extends BaseController
         $soldeClient = $this->mvtModel->getSoldeClient($clientId);
         if ($soldeClient < $totalADelever) {
             $montantManquant = $totalADelever - $soldeClient;
-            return redirect()->back()->with('error',
+            return redirect()->back()->with(
+                'error',
                 "Solde insuffisant. Vous avez " . number_format($soldeClient, 2) . "€ mais il en faut " . number_format($totalADelever, 2) . "€. Montant manquant: " . number_format($montantManquant, 2) . "€"
             );
         }
@@ -122,7 +125,7 @@ class PaiementController extends BaseController
                     throw new \Exception('Option Gold introuvable');
                 }
 
-                $optionInserted = $this->clientOptionsModel->activateGoldSubscription($clientId, (int)$goldOption['id']);
+                $optionInserted = $this->clientOptionsModel->activateGoldSubscription($clientId, (int) $goldOption['id']);
                 if (!$optionInserted) {
                     throw new \Exception('Impossible d\'activer Gold');
                 }
@@ -202,7 +205,7 @@ class PaiementController extends BaseController
         try {
             $db->transStart();
 
-            $optionInserted = $this->clientOptionsModel->activateGoldSubscription($clientId, (int)$goldOption['id']);
+            $optionInserted = $this->clientOptionsModel->activateGoldSubscription($clientId, (int) $goldOption['id']);
             if (!$optionInserted) {
                 throw new \Exception('Impossible d\'activer Gold');
             }
