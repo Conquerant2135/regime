@@ -43,7 +43,7 @@
                     <span class="sidebar-icon">🥗</span>
                     <span>CRUD Régimes</span>
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="<?= site_url('/admin/sports') ?>" class="sidebar-link <?= url_is('admin/sports*') ? 'active' : '' ?>">
                     <span class="sidebar-icon">🏃‍♂️</span>
                     <span>CRUD Sports</span>
                 </a>

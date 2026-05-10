@@ -6,11 +6,13 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\MvtCompteModel;
 use App\Models\RegimesModel;
+use App\Models\SportsModel;
 use App\Models\UsersModel;
 
 class AdminController extends BaseController
 {
     private const REGIMES_ROUTE = 'admin/regimes';
+    private const SPORTS_ROUTE = 'admin/sports';
 
     private function getRegimeValidationRules(): array
     {
@@ -23,6 +25,13 @@ class AdminController extends BaseController
             'pourcentage_poisson' => $percentageRule,
             'prix_par_jour' => 'required|decimal|greater_than_equal_to[0]',
             'impact_journalier' => 'required|decimal',
+        ];
+    }
+
+    private function getSportValidationRules(): array
+    {
+        return [
+            'libelle' => 'required|min_length[2]|max_length[120]',
         ];
     }
 
@@ -148,5 +157,87 @@ class AdminController extends BaseController
 
         return redirect()->to(site_url(self::REGIMES_ROUTE))
             ->with('success', 'Regime supprime avec succes.');
+    }
+
+    public function sports()
+    {
+        $sportsModel = new SportsModel();
+        $keyword = trim((string) $this->request->getGet('q'));
+
+        $data = [
+            'keyword' => $keyword,
+            'sports' => $sportsModel->search($keyword),
+        ];
+
+        return view('admin/sport/crud', $data);
+    }
+
+    public function storeSport()
+    {
+        $rules = $this->getSportValidationRules();
+
+        if (! $this->validate($rules)) {
+            return redirect()->to(site_url(self::SPORTS_ROUTE))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $sportsModel = new SportsModel();
+        $sportsModel->insert([
+            'libelle' => trim((string) $this->request->getPost('libelle')),
+        ]);
+
+        return redirect()->to(site_url(self::SPORTS_ROUTE))
+            ->with('success', 'Sport cree avec succes.');
+    }
+
+    public function editSport(int $id)
+    {
+        $sportsModel = new SportsModel();
+        $sport = $sportsModel->find($id);
+
+        if (! $sport) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('admin/sport/update', ['sport' => $sport]);
+    }
+
+    public function updateSport(int $id)
+    {
+        $rules = $this->getSportValidationRules();
+
+        if (! $this->validate($rules)) {
+            return redirect()->to(site_url('admin/sports/update/' . $id))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $sportsModel = new SportsModel();
+        if (! $sportsModel->find($id)) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $sportsModel->update($id, [
+            'libelle' => trim((string) $this->request->getPost('libelle')),
+        ]);
+
+        return redirect()->to(site_url(self::SPORTS_ROUTE))
+            ->with('success', 'Sport mis a jour avec succes.');
+    }
+
+    public function deleteSport(int $id)
+    {
+        $sportsModel = new SportsModel();
+        $sport = $sportsModel->find($id);
+
+        if (! $sport) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $sportsModel->delete($id);
+
+        return redirect()->to(site_url(self::SPORTS_ROUTE))
+            ->with('success', 'Sport supprime avec succes.');
     }
 }

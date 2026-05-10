@@ -50,6 +50,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('regimes/update/(:num)', 'AdminController::editRegime/$1');
     $routes->post('regimes/update/(:num)', 'AdminController::updateRegime/$1');
     $routes->post('regimes/delete/(:num)', 'AdminController::deleteRegime/$1');
+    $routes->get('sports', 'AdminController::sports');
+    $routes->post('sports', 'AdminController::storeSport');
+    $routes->get('sports/update/(:num)', 'AdminController::editSport/$1');
+    $routes->post('sports/update/(:num)', 'AdminController::updateSport/$1');
+    $routes->post('sports/delete/(:num)', 'AdminController::deleteSport/$1');
 });
 
 // l'api admin , verouillage par le filtre
