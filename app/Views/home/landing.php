@@ -5,7 +5,7 @@
     <div class="hero-copy">
         <span class="eyebrow">Votre parcours, plus simple</span>
         <h1>Un espace accueillant pour suivre votre régime et votre progression.</h1>
-        <p>
+        <p style="margin-top: 25px">
             Découvrez des régimes adaptés à votre objectif, calculez votre IMC en quelques secondes et gardez votre
             compte à portée de main.
         </p>
