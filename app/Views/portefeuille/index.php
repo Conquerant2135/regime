@@ -68,6 +68,7 @@
 
 <div id="modal-code" class="modal-code">
     <div class="modal-content">
+        <?= csrf_field() ?>
         <h2>Ajouter du crédit</h2>
         <p class="modal-help-text">
             Saisissez le code reçu par email ou SMS. Il sert à créditer votre portefeuille et votre solde sera mis à jour juste après validation.
@@ -109,18 +110,33 @@
 
         setCodeLog('Vérification du code en cours, veuillez patienter...', 'info');
 
+        // Récupérer le token CSRF depuis l'input caché
+        const csrfToken = document.querySelector('input[name="csrf_test_name"]')?.value || '';
+
+        if (!csrfToken) {
+            setCodeLog('Erreur de sécurité: token CSRF manquant', 'error');
+            return;
+        }
+
         fetch('/portefeuille/utiliser-code', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
             },
             body: JSON.stringify({ code: code })
         })
-        .then(response => response.json())
+        .then(response => {
+            // Vérifier le statut HTTP
+            if (!response.ok && response.status !== 200) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                setCodeLog(data.message, 'success');
+                setCodeLog(data.message || 'Code appliqué avec succès!', 'success');
 
                 document.getElementById('solde-display').textContent =
                     new Intl.NumberFormat('fr-FR', { style: 'decimal', minimumFractionDigits: 2 }).format(parseFloat(data.nouveau_solde)) + ' €';
@@ -130,13 +146,14 @@
                     date: new Date()
                 });
 
-                closeCodeModal();
+                setTimeout(() => closeCodeModal(), 1500);
             } else {
-                setCodeLog(data.message, 'error');
+                setCodeLog(data.message || 'Erreur lors de l\'application du code', 'error');
             }
         })
         .catch(error => {
-            setCodeLog('Erreur: ' + error, 'error');
+            console.error('Erreur AJAX:', error);
+            setCodeLog('Erreur: ' + error.message, 'error');
         });
     }
 

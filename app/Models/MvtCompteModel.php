@@ -19,7 +19,7 @@ class MvtCompteModel extends Model
      */
     public function recordTransaction(int $clientId, string $type, float $montant): bool
     {
-        return $this->recordTransactionFull($clientId, $type, $montant, null, 'autre');
+        return $this->recordTransactionFull($clientId, $type, $montant);
     }
 
     /**
