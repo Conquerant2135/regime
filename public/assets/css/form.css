@@ -174,6 +174,87 @@ main {
     transform: translateY(-2px);
 }
 
+/* Steps Indicator / Pagination */
+.steps-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 0;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.step-item.active {
+    opacity: 1;
+}
+
+.step-item.completed {
+    opacity: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(92, 120, 146, 0.2);
+    color: #5f7185;
+    transition: all 0.3s ease;
+}
+
+.step-item.active .step-number {
+    background: linear-gradient(135deg, #2a8fd6, #22b8a6);
+    color: #fff;
+    border-color: rgba(34, 184, 166, 0.4);
+    box-shadow: 0 6px 18px rgba(34, 184, 166, 0.2);
+    transform: scale(1.1);
+}
+
+.step-item.completed .step-number {
+    background: linear-gradient(135deg, #22b8a6, #1a9a8c);
+    color: #fff;
+    border-color: rgba(34, 184, 166, 0.4);
+    box-shadow: 0 4px 12px rgba(34, 184, 166, 0.15);
+}
+
+.step-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #5f7185;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.step-item.active .step-label {
+    color: #2a8fd6;
+    font-weight: 600;
+}
+
+.step-item.completed .step-label {
+    color: #22b8a6;
+}
+
+.step-divider {
+    width: 32px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(92, 120, 146, 0.15) 0%, rgba(92, 120, 146, 0.3) 50%, rgba(92, 120, 146, 0.15) 100%);
+    margin: 0 8px;
+}
+
 /* Demo Accounts Section */
 .demo-header {
     text-align: left;

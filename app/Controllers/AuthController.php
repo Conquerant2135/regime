@@ -194,7 +194,7 @@ class AuthController extends BaseController
             $usersModel->save($userData);
             // Supprimer la session seulement APRÈS une inscription réussie
             session()->remove('wizard_step_1');
-            return redirect()->to('/login')->with('success', 'Inscription réussie! Vous pouvez vous connecter.');
+            return redirect()->to('/')->with('success', 'Inscription réussie! Vous pouvez vous connecter.');
         } catch (\Exception $e) {
             log_message('error', 'Erreur inscription: ' . $e->getMessage());
             return view('auth/info_perso', ['validation' => $this->validator, 'error' => $e->getMessage()]);

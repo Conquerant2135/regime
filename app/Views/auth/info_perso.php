@@ -17,6 +17,19 @@
         <section class="login">
             <div class="container">
                 <div class="form-container">
+                    <!-- Step Indicator -->
+                    <div class="steps-indicator">
+                        <div class="step-item completed">
+                            <div class="step-number">✓</div>
+                            <span class="step-label">Informations</span>
+                        </div>
+                        <div class="step-divider"></div>
+                        <div class="step-item active">
+                            <div class="step-number">2</div>
+                            <span class="step-label">Morphologie</span>
+                        </div>
+                    </div>
+
                     <form action="/inscription" method="post" class="login-form">
                         <?= csrf_field() ?>
                         <div class="form-group">
