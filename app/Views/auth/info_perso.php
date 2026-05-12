@@ -59,7 +59,8 @@
                             <input type="number" step="0.01" name="poid" id="poid" placeholder="poid en kg"
                                 value="<?= esc(old('poid')) ?>">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-actions">
+                            <a href="/inscription/back" class="btn btn-back">← Retour</a>
                             <input type="submit" value="S'inscrire" class="btn btn-accept">
                         </div>
                     </form>

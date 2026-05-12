@@ -45,7 +45,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="text" name="nom" id="nom" placeholder="Nom" value="<?= esc(old('nom')) ?>">
+                            <input type="text" name="nom" id="nom" placeholder="Nom" value="<?= esc(old('nom') ?? $userData['nom'] ?? '') ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -57,7 +57,7 @@
                                 <?php } ?>
                             </div>
                             <input type="email" name="email" id="email" placeholder="example@example.com"
-                                value="<?= esc(old('email')) ?>">
+                                value="<?= esc(old('email') ?? $userData['email'] ?? '') ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -69,7 +69,7 @@
                                 <?php } ?>
                             </div>
 
-                            <input type="password" name="mot_de_passe" id="password" placeholder="Mot de passe">
+                            <input type="password" name="mot_de_passe" id="password" placeholder="Mot de passe" value="<?= esc(old('mot_de_passe') ?? $userData['mot_de_passe'] ?? '') ?>">
                         </div>
                         <div class="form-group">
                             <div class="form-label">
@@ -80,7 +80,7 @@
                                     </small>
                                 <?php } ?>
                             </div>
-                            <input type="date" name="naissance" id="naissance" value="<?= esc(old('naissance')) ?>">
+                            <input type="date" name="naissance" id="naissance" value="<?= esc(old('naissance') ?? $userData['date_naissance'] ?? '') ?>">
                         </div>
 
                         <div class="form-group">
@@ -95,18 +95,19 @@
                             <div class="sex-options">
                                 <div class="sex-option">
                                     <input type="radio" id="sexe_homme" name="sexe" value="homme"
-                                        <?= old('sexe') === 'homme' ? 'checked' : '' ?>>
+                                        <?= (old('sexe') ?? $userData['sexe'] ?? '') === 'homme' ? 'checked' : '' ?>>
                                     <label for="sexe_homme">Homme</label>
                                 </div>
                                 <div class="sex-option">
                                     <input type="radio" id="sexe_femme" name="sexe" value="femme"
-                                        <?= old('sexe') === 'femme' ? 'checked' : '' ?>>
+                                        <?= (old('sexe') ?? $userData['sexe'] ?? '') === 'femme' ? 'checked' : '' ?>>
                                     <label for="sexe_femme">Femme</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group form-actions">
+                            <a href="/login" class="btn btn-back">← Retour</a>
                             <input type="submit" value="Page suivante" class="btn btn-accept">
                         </div>
                     </form>

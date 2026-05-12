@@ -23,6 +23,7 @@ $routes->get('/login', 'AuthController::loginForm');
 $routes->post('/login', 'AuthController::login');
 $routes->get('/inscription/contact', 'AuthController::inscriptionFormContact');
 $routes->post('/inscription/info', 'AuthController::inscriptionFormInfoPerso');
+$routes->get('/inscription/back', 'AuthController::inscriptionBackToContact');
 $routes->post('/inscription', 'AuthController::inscription');
 $routes->get('/logout', 'AuthController::logout');
 

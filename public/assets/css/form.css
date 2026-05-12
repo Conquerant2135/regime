@@ -222,6 +222,8 @@ main {
     border-color: rgba(34, 184, 166, 0.4);
     box-shadow: 0 6px 18px rgba(34, 184, 166, 0.2);
     transform: scale(1.1);
+        margin-top: 20px;
+
 }
 
 .step-item.completed .step-number {
@@ -254,6 +256,38 @@ main {
     height: 2px;
     background: linear-gradient(90deg, rgba(92, 120, 146, 0.15) 0%, rgba(92, 120, 146, 0.3) 50%, rgba(92, 120, 146, 0.15) 100%);
     margin: 0 8px;
+}
+
+/* Form Actions - Multiple Buttons */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.form-actions .btn {
+    flex: 1;
+    margin: 0;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.8);
+    color: #5f7185;
+    border: 1.5px solid rgba(92, 120, 146, 0.25);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #2a8fd6;
+    border-color: rgba(42, 143, 214, 0.3);
+    box-shadow: 0 4px 12px rgba(42, 143, 214, 0.12);
+    transform: translateY(-2px);
 }
 
 /* Demo Accounts Section */

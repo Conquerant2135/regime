@@ -162,6 +162,18 @@ class AuthController extends BaseController
         return view('auth/info_perso');
     }
 
+    public function inscriptionBackToContact()
+    {
+        // Récupérer les données de la session
+        $userData = session()->get('wizard_step_1');
+        if (!is_array($userData) || empty($userData)) {
+            return redirect()->to('/inscription/contact');
+        }
+
+        // Afficher contact.php avec les données pré-remplies
+        return view('auth/contact', ['userData' => $userData]);
+    }
+
     public function inscription()
     {
         if (!$this->validate($this->wizardSecondPageValidationRules())) {
