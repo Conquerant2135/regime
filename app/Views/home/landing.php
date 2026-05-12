@@ -47,16 +47,34 @@
     <div class="section-head">
         <span class="eyebrow">Catégories</span>
         <h2>Des solutions pour chaque objectif</h2>
+        <p>Choisissez le régime qui correspond à vos besoins et atteignez vos objectifs fitness.</p>
     </div>
 
     <div class="category-grid">
         <article class="category-card">
-            <h3>+ Poids</h3>
-            <p>Des programmes équilibrés pour reprendre du poids progressivement.</p>
+            <div class="category-image">
+                <img src="<?= base_url('assets/images/gain.jpg') ?>" alt="Prise de poids progressive" loading="lazy">
+                <div class="category-overlay"></div>
+                <span class="category-badge">+ Poids</span>
+            </div>
+            <div class="category-content">
+                <h3>Prise de Poids</h3>
+                <p>Des programmes équilibrés pour reprendre du poids progressivement et sainement.</p>
+                <a href="<?= site_url('regime-sport') ?>" class="category-link">Découvrir →</a>
+            </div>
         </article>
+
         <article class="category-card">
-            <h3>- Poids</h3>
-            <p>Des régimes orientés perte de poids, avec un suivi clair et progressif.</p>
+            <div class="category-image">
+                <img src="<?= base_url('assets/images/perte.jpg') ?>" alt="Perte de poids efficace" loading="lazy">
+                <div class="category-overlay"></div>
+                <span class="category-badge">- Poids</span>
+            </div>
+            <div class="category-content">
+                <h3>Perte de Poids</h3>
+                <p>Des régimes orientés perte de poids, avec un suivi clair et des résultats progressifs.</p>
+                <a href="<?= site_url('regime-sport') ?>" class="category-link">Découvrir →</a>
+            </div>
         </article>
     </div>
 </section>
@@ -69,7 +87,79 @@
         </p>
     </div>
 </section>
+<section class="testimonials-section">
+    <div class="section-head">
+        <span class="eyebrow">Témoignages</span>
+        <h2>Leurs succès, notre fierté</h2>
+        <p>Des utilisateurs qui ont transformé leur parcours fitness grâce à notre plateforme.</p>
+    </div>
 
+    <div class="testimonials-grid">
+        <article class="testimonial-card">
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "J'ai enfin trouvé une application simple et efficace pour suivre mes objectifs. L'interface est très intuitive et l'équipe est réactive."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MD</div>
+                    <div>
+                        <strong>Marie Dupont</strong>
+                        <span class="author-meta">Perte de poids • 8 mois</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+        </article>
+
+        <article class="testimonial-card">
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "Les régimes proposés correspondent vraiment à mes besoins. J'ai pu progresser à mon rythme sans stress."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">JM</div>
+                    <div>
+                        <strong>Jean Martin</strong>
+                        <span class="author-meta">Prise de poids • 5 mois</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+        </article>
+
+        <article class="testimonial-card">
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "L'option Gold vaut vraiment le coup ! Les réductions et les fonctionnalités premium m'ont vraiment aidé à accélérer mes résultats."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SB</div>
+                    <div>
+                        <strong>Sophie Bernard</strong>
+                        <span class="author-meta">Perte de poids • Membre Gold</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+        </article>
+
+        <article class="testimonial-card">
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "L'équipe a été très attentive à mes retours. C'est rare de voir une appli aussi responsive et centrée sur l'utilisateur."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">PL</div>
+                    <div>
+                        <strong>Pierre Leclerc</strong>
+                        <span class="author-meta">Prise de poids • 12 mois</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+        </article>
+    </div>
+</section>
 <script>
     (() => {
         const form = document.getElementById('imc-form');
