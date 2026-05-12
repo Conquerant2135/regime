@@ -64,6 +64,11 @@
                     <span class="sidebar-icon">🔧</span>
                     <span>CRUD options</span>
                 </a>
+                <a href="<?= site_url('/admin/codes') ?>"
+                    class="sidebar-link <?= url_is('admin/codes*') ? 'active' : '' ?>">
+                    <span class="sidebar-icon">🎟️</span>
+                    <span>CRUD Codes Promo</span>
+                </a>
             </nav>
         </aside>
 

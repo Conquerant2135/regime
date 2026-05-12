@@ -114,7 +114,7 @@ class PaiementController extends BaseController
 
             return redirect()->back()->with(
                 'error',
-                'Solde insuffisant. Vous avez ' . number_format($soldeClient, 2) . '€ mais il en faut ' . number_format($totalADelever, 2) . '€. Montant manquant: ' . number_format($montantManquant, 2) . '€'
+                'Solde insuffisant. Vous avez ' . number_format($soldeClient, 2) . ' € (Euro), mais il en faut ' . number_format($totalADelever, 2) . ' € (Euro). Montant manquant: ' . number_format($montantManquant, 2) . ' € (Euro)'
             );
         }
 
@@ -192,8 +192,9 @@ class PaiementController extends BaseController
             $message = $modeAchat === 'gold' || $hasGold
                 ? 'Achat effectué avec succès! Remise Gold appliquée (' . number_format($goldRemise, 2) . '%). Solde actuel: '
                 : 'Achat effectué avec succès! Solde actuel: ';
+            $message .= number_format($newBalance, 2) . ' € (Euro)';
 
-            return redirect()->back()->with('purchase_success', $message . number_format($newBalance, 2) . '€');
+            return redirect()->back()->with('purchase_success', $message . number_format($newBalance, 2) . ' € (Euro)');
         } catch (\Exception $e) {
             if (isset($db) && $db->transStatus() !== false) {
                 $db->transRollback();
@@ -211,7 +212,7 @@ class PaiementController extends BaseController
         $rawMessage = $exception->getMessage();
 
         if (stripos($rawMessage, 'Duplicate entry') !== false || stripos($rawMessage, 'unique_regime_sport_client') !== false) {
-            return 'Achat déjà enregistré : ce client a déjà acheté ce régime aujourd\'hui. Détails: client #' . $clientId . ', régime #' . $regimeId . ', sport #' . $sportId . ', objectif #' . $objectifId . ', durée ' . $duree . ' jour(s), montant ' . number_format($prix, 2) . '€.';
+            return 'Achat déjà enregistré : ce client a déjà acheté ce régime aujourd\'hui. Détails: client #' . $clientId . ', régime #' . $regimeId . ', sport #' . $sportId . ', objectif #' . $objectifId . ', durée ' . $duree . ' jour(s), montant ' . number_format($prix, 2) . ' € (Euro).';
         }
 
         return 'Erreur lors de l\'achat: ' . $rawMessage;
@@ -250,7 +251,7 @@ class PaiementController extends BaseController
         $soldeClient = $this->mvtModel->getSoldeClient($clientId);
 
         if ($soldeClient < $goldOptionPrice) {
-            return redirect()->back()->with('error', 'Solde insuffisant pour souscrire à Gold. Montant requis: ' . number_format($goldOptionPrice, 2) . '€');
+            return redirect()->back()->with('error', 'Solde insuffisant pour souscrire à Gold. Montant requis: ' . number_format($goldOptionPrice, 2) . ' € (Euro)');
         }
 
         $db = Database::connect();

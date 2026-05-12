@@ -24,10 +24,10 @@
     <div id="alert-message" class="alert"></div>
 
     <section class="wallet-card">
-        <div class="solde-label">Solde actuel</div>
+        <div class="solde-label">Solde actuel (€)</div>
         <div class="solde-value" id="solde-display"><?= number_format((float) $solde, 2) ?> €</div>
         <p class="wallet-help-text">
-            Le solde affiché ici est utilisé pour vos achats de régimes, de sport et d’options.
+            Le solde affiché ici en Euros (€) est utilisé pour vos achats de régimes, de sport et d'options.
         </p>
         <div class="btn-group">
             <button class="btn btn-add" onclick="openCodeModal()">+ Ajouter de l'argent</button>

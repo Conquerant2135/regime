@@ -9,12 +9,14 @@ use App\Models\OptionModel;
 use App\Models\RegimesModel;
 use App\Models\SportsModel;
 use App\Models\UsersModel;
+use App\Models\CodeModel;
 
 class AdminController extends BaseController
 {
     private const REGIMES_ROUTE = 'admin/regimes';
     private const SPORTS_ROUTE = 'admin/sports';
     private const OPTIONS_ROUTE = 'admin/options';
+    private const CODES_ROUTE = 'admin/codes';
 
     private function getRegimeValidationRules(): array
     {
@@ -323,5 +325,97 @@ class AdminController extends BaseController
 
         return redirect()->to(site_url(self::SPORTS_ROUTE))
             ->with('success', 'Sport supprime avec succes.');
+    }
+
+    // ======================================================
+    // CRUD - CODES PROMO
+    // ======================================================
+
+    public function codes()
+    {
+        $codeModel = new CodeModel();
+        $codes = $codeModel->findAll();
+
+        return view('admin/codes/list', ['codes' => $codes]);
+    }
+
+    public function storeCode()
+    {
+        $rules = [
+            'valeur' => 'required|min_length[3]|max_length[50]|is_unique[codes.valeur]',
+            'gain' => 'required|decimal|greater_than[0]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(site_url(self::CODES_ROUTE))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $codeModel = new CodeModel();
+        $codeModel->insert([
+            'valeur' => strtoupper(trim((string) $this->request->getPost('valeur'))),
+            'gain' => (float) $this->request->getPost('gain'),
+            'is_used' => 0,
+        ]);
+
+        return redirect()->to(site_url(self::CODES_ROUTE))
+            ->with('success', 'Code promo créé avec succès.');
+    }
+
+    public function editCode(int $id)
+    {
+        $codeModel = new CodeModel();
+        $code = $codeModel->find($id);
+
+        if (!$code) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('admin/codes/update', ['code' => $code]);
+    }
+
+    public function updateCode(int $id)
+    {
+        $codeModel = new CodeModel();
+        $code = $codeModel->find($id);
+
+        if (!$code) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $rules = [
+            'valeur' => 'required|min_length[3]|max_length[50]',
+            'gain' => 'required|decimal|greater_than[0]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(site_url('admin/codes/update/' . $id))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $codeModel->update($id, [
+            'valeur' => strtoupper(trim((string) $this->request->getPost('valeur'))),
+            'gain' => (float) $this->request->getPost('gain'),
+        ]);
+
+        return redirect()->to(site_url(self::CODES_ROUTE))
+            ->with('success', 'Code promo mis à jour avec succès.');
+    }
+
+    public function deleteCode(int $id)
+    {
+        $codeModel = new CodeModel();
+        $code = $codeModel->find($id);
+
+        if (!$code) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $codeModel->delete($id);
+
+        return redirect()->to(site_url(self::CODES_ROUTE))
+            ->with('success', 'Code promo supprimé avec succès.');
     }
 }

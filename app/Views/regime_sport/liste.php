@@ -8,7 +8,7 @@
             <span class="eyebrow">Catalogue des régimes</span>
             <h1><?= esc($title ?? 'Couples régimes - sports') ?></h1>
             <p>
-                Parcourez les combinaisons régime + sport disponibles, comparez les prix et trouvez la solution la plus adaptée à votre objectif.
+                <p>Parcourez les combinaisons régime + sport disponibles (tarifs en €), comparez les prix et trouvez la solution la plus adaptée à votre objectif.</p>
             </p>
         </div>
 
@@ -200,9 +200,9 @@
                 <strong><?= esc(number_format((float) ($goldRemisePreview ?? ($goldOption['remise'] ?? 0)), 2, '.', '')) ?>% de remise sur tous les régimes</strong>
                 <p>
                     <?php if (!empty($goldOptionPrice)): ?>
-                        Disponible pour <?= esc(number_format((float) $goldOptionPrice, 2, '.', '')) ?> €.
+                        Disponible pour <?= esc(number_format((float) $goldOptionPrice, 2, '.', '')) ?> € (Euro).
                     <?php else: ?>
-                        Activez Gold pour bénéficier de tarifs plus doux.
+                        Activez Gold pour bénéficier de tarifs plus avantageux (en €).
                     <?php endif; ?>
                 </p>
             </div>
@@ -228,7 +228,7 @@
                     <th>Sport</th>
                     <th>Impact journalier (kg)</th>
                     <th>Durée (jours)</th>
-                    <th>Cout total</th>
+                    <th>Coût total (€)</th>
                 </tr>
             </thead>
             <tbody>

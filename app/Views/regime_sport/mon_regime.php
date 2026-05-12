@@ -60,7 +60,7 @@
                     <th>Sport</th>
                     <th>Objectif</th>
                     <th>Durée</th>
-                    <th>Prix / jour</th>
+                    <th>Prix / jour (€)</th>
                     <th>Impact</th>
                     <th>Coût estimé</th>
                 </tr>
@@ -86,7 +86,7 @@
                         <td data-label="Sport"><?= esc($purchase['sport_libelle'] ?? '—') ?></td>
                         <td data-label="Objectif"><?= esc($purchase['objectif_libelle'] ?? '—') ?></td>
                         <td data-label="Durée"><?= esc((string) $duree) ?> jours</td>
-                        <td data-label="Prix / jour"><?= esc(number_format($prixParJour, 2, '.', '')) ?> €</td>
+                        <td data-label="Prix / jour (€)"><?= esc(number_format($prixParJour, 2, '.', '')) ?> €</td>
                         <td data-label="Impact"><?= $impact === null ? '—' : esc(number_format((float) $impact, 3, '.', '')) ?>
                             kg</td>
                         <td data-label="Coût estimé">

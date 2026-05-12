@@ -73,7 +73,7 @@ class CodeModel extends Model
 
             return [
                 'success' => true,
-                'message' => 'Code utilisé avec succès! Vous avez reçu ' . number_format((float)$codeRecord['gain'], 2) . '€',
+                'message' => 'Code utilisé avec succès! Vous avez reçu ' . number_format((float)$codeRecord['gain'], 2) . ' € (Euro)',
                 'montant' => (float)$codeRecord['gain'],
                 'nouveau_solde' => $newBalance
             ];

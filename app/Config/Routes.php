@@ -67,6 +67,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->post('options', 'AdminController::storeOption');
     $routes->post('options/update/(:num)', 'AdminController::updateOption/$1');
     $routes->post('options/delete/(:num)', 'AdminController::deleteOption/$1');
+    $routes->get('codes', 'AdminController::codes');
+    $routes->post('codes', 'AdminController::storeCode');
+    $routes->get('codes/update/(:num)', 'AdminController::editCode/$1');
+    $routes->post('codes/update/(:num)', 'AdminController::updateCode/$1');
+    $routes->post('codes/delete/(:num)', 'AdminController::deleteCode/$1');
 });
 
 // -----------------------------------------------------------------------------

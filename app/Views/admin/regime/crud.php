@@ -64,7 +64,7 @@ CRUD Regimes - Fitness Regime
                 <input type="number" name="pourcentage_poisson" id="pourcentage_poisson" step="0.01" min="0" max="100" value="<?= old('pourcentage_poisson') ?>" required>
             </div>
             <div>
-                <label for="prix_par_jour" style="display:block; margin-bottom:6px; color: var(--muted);">Prix par jour</label>
+                <label for="prix_par_jour" style="display:block; margin-bottom:6px; color: var(--muted);">Prix par jour (€)</label>
                 <input type="number" name="prix_par_jour" id="prix_par_jour" step="0.01" min="0" value="<?= old('prix_par_jour') ?>" required>
             </div>
             <div>
@@ -98,7 +98,7 @@ CRUD Regimes - Fitness Regime
                     <th>% viande</th>
                     <th>% volaille</th>
                     <th>% poisson</th>
-                    <th>Prix / jour</th>
+                    <th>Prix / jour (€)</th>
                     <th>Impact / jour</th>
                     <th style="text-align:center;">Actions</th>
                 </tr>

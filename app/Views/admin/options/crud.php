@@ -57,7 +57,7 @@ CRUD Options - Fitness Regime
                     value="<?= old('remise') ?>" required>
             </div>
             <div>
-                <label for="prix_option" style="display:block; margin-bottom:6px; color: var(--muted);">Prix
+                <label for="prix_option" style="display:block; margin-bottom:6px; color: var(--muted);">Prix en Euro (€)
                     option</label>
                 <input type="number" name="prix_option" id="prix_option" step="0.01" min="0"
                     value="<?= old('prix_option') ?>" required>
@@ -89,7 +89,7 @@ CRUD Options - Fitness Regime
                     <th>ID</th>
                     <th>Libelle</th>
                     <th>Remise</th>
-                    <th>Prix option</th>
+                    <th>Prix option (€)</th>
                     <th style="text-align:center;">Actions</th>
                 </tr>
             </thead>

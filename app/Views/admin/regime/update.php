@@ -59,7 +59,7 @@ Modifier Regime - Fitness Regime
                 <input type="number" name="pourcentage_poisson" id="pourcentage_poisson" step="0.01" min="0" max="100" value="<?= old('pourcentage_poisson', $regime->pourcentage_poisson) ?>" required>
             </div>
             <div>
-                <label for="prix_par_jour" style="display:block; margin-bottom:6px; color: var(--muted);">Prix par jour</label>
+                <label for="prix_par_jour" style="display:block; margin-bottom:6px; color: var(--muted);">Prix par jour (€)</label>
                 <input type="number" name="prix_par_jour" id="prix_par_jour" step="0.01" min="0" value="<?= old('prix_par_jour', $regime->prix_par_jour) ?>" required>
             </div>
             <div>
