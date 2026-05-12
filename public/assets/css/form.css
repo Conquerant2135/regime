@@ -24,11 +24,11 @@ input {
     color: #183048;
 }
 
-.container {
+.login .container {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     max-width: 1440px;
-    margin: auto 0;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,10 +77,55 @@ input {
 }
 
 body {
+    display: block;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.login-section {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+    flex: 1;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.demo-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    flex: 1;
+    min-height: auto;
 }
 
 .form-error {
@@ -127,4 +172,182 @@ body {
     color: #fff;
     box-shadow: 0 8px 24px rgba(34, 184, 166, 0.18);
     transform: translateY(-2px);
+}
+
+/* Demo Accounts Section */
+.demo-header {
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.demo-header h3 {
+    font-size: 1.4rem;
+    color: #183048;
+    margin-bottom: 8px;
+}
+
+.demo-header p {
+    color: #5f7185;
+    font-size: 0.9rem;
+}
+
+.accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.account-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1.5px solid rgba(92, 120, 146, 0.18);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(25, 49, 77, 0.08);
+    flex: 1;
+}
+
+.account-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(25, 49, 77, 0.16);
+    border-color: rgba(42, 143, 214, 0.32);
+}
+
+.account-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(42, 143, 214, 0.08);
+}
+
+.admin-card .account-icon {
+    background: linear-gradient(135deg, rgba(217, 79, 79, 0.12), rgba(217, 79, 79, 0.06));
+}
+
+.user-card .account-icon {
+    background: linear-gradient(135deg, rgba(42, 143, 214, 0.12), rgba(34, 184, 166, 0.08));
+}
+
+.account-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.account-info h4 {
+    font-size: 1.05rem;
+    color: #183048;
+    margin-bottom: 4px;
+}
+
+.account-email {
+    font-size: 0.85rem;
+    color: #5f7185;
+    margin-bottom: 6px;
+    word-break: break-all;
+    display: block;
+}
+
+.account-role {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    background: rgba(42, 143, 214, 0.1);
+    color: #2a8fd6;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.admin-card .account-role {
+    background: rgba(217, 79, 79, 0.15);
+    color: #c14242;
+}
+
+.account-action {
+    font-size: 1.4rem;
+    color: #2a8fd6;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.account-card:hover .account-action {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+@media (max-width: 1024px) {
+    .login-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .form-column {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+    .demo-column {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-section {
+        padding: 16px;
+        min-height: auto;
+    }
+
+    .login-container {
+        gap: 20px;
+    }
+
+    .accounts-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .account-card {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .account-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.6rem;
+    }
+
+    .account-info h4 {
+        font-size: 0.95rem;
+    }
+
+    .account-email {
+        font-size: 0.80rem;
+    }
+
+    .demo-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .form-container {
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(25, 49, 77, 0.08);
+    }
+
+    .form-group input {
+        width: 100% !important;
+    }
 }
